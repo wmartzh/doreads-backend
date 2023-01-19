@@ -1,0 +1,7 @@
+#ignore node modules
+
+/node_modules
+.env
+yarn.lock
+dist/
+.docker
