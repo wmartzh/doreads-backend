@@ -9,3 +9,95 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  ADMIN
+  LIBRARIAN
+}
+
+enum BookStatus {
+  AVAILABLE
+  LOANED
+  UNAVAILABLE
+}
+
+enum StudentStatus {
+  ACTIVE
+  BLOCKED
+  INACTIVE
+}
+
+enum PenaltyStatus {
+  PAID
+  UNPAYED
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(LIBRARIAN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Book {
+  id        Int        @id @default(autoincrement())
+  title     String
+  author    String
+  isbn      Int        @unique
+  category  String
+  year      Int
+  picture   String?
+  editorial String?
+  language  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  bookInfo  BookInfo[]
+}
+
+model BookInfo {
+  id        Int        @id @default(autoincrement())
+  code      Int        @unique
+  status    BookStatus @default(AVAILABLE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  book      Book       @relation(fields: [bookId], references: [id])
+  bookId    Int
+  loan      Loan[]
+}
+
+model Student {
+  id        Int        @id @default(autoincrement())
+  code      Int        @unique
+  name      String
+  email     String     @unique
+  phone     String
+  status    StudentStatus @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  loan      Loan[]
+  penalty   Penalty[]
+}
+
+model Penalty {
+  id        Int        @id @default(autoincrement())
+  amount    Int
+  status    PenaltyStatus @default(UNPAYED)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  student   Student    @relation(fields: [studentId], references: [id])
+  studentId Int
+}
+
+model Loan {
+  id        Int        @id @default(autoincrement())
+  returnDate DateTime
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  student   Student    @relation(fields: [studentId], references: [id])
+  studentId Int
+  bookInfo  BookInfo   @relation(fields: [bookInfoId], references: [id])
+  bookInfoId Int
+}
