@@ -1,8 +1,15 @@
-import express, { Application } from "express";
+import express, { Application, json } from "express";
 
 import * as http from "http";
+import bodyParser from "body-parser";
+
+import morgan from "morgan";
 
 const app = express();
+
+app.use(morgan('dev'));
+
+app.use (json());
 
 export default class Server {
   //Load router
