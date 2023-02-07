@@ -3,7 +3,7 @@ message */
 export class CustomError extends Error {
   message: any;
   constructor(message: any) {
-    super(JSON.stringify(message));
+    super(JSON.parse(message));
     this.message = message;
   }
 }

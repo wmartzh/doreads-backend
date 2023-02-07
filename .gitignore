@@ -6,3 +6,4 @@ yarn.lock
 dist/
 .docker
 package-lock.json
+/prisma/migrations
