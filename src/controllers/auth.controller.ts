@@ -8,7 +8,6 @@ class AuthController extends BaseController {
     try {
       
       const data = await RegisterUserSchema.validateAsync(req.body);
-      console.log(data)
       const result = await authService.register(data);
       this.responseHandler(
         res,
@@ -17,7 +16,6 @@ class AuthController extends BaseController {
       );
     } 
     catch (error: any) {
-      console.log(error);
       if (error.code && error.code === "P2002") {
         this.responseHandler(res, { error: "User was already register" }, 400);
       } else {
