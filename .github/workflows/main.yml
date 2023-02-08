@@ -1,8 +1,12 @@
 name: pull_request_dev
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
-      - "main"
+      - main
+      - DOR*
 jobs:
   run-action:
     name: Run action
