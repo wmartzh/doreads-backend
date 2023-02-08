@@ -1,12 +1,11 @@
 name: pull_request_dev
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+   pull_request:
     branches:
       - main
       - DOR*
+    types: ['opened', 'edited', 'reopened', 'synchronize']
+  
 jobs:
   run-action:
     name: Run action
