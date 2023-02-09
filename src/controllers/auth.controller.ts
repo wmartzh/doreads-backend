@@ -6,7 +6,6 @@ import { BaseController } from "../types/base.controller";
 class AuthController extends BaseController {
   async register(req: Request, res: Response) {
     try {
-      
       const data = await RegisterUserSchema.validateAsync(req.body);
       const result = await authService.register(data);
       this.responseHandler(
@@ -14,8 +13,7 @@ class AuthController extends BaseController {
         { message: `User ${result.name} created successfully` },
         200
       );
-    } 
-    catch (error: any) {
+    } catch (error: any) {
       if (error.code && error.code === "P2002") {
         this.responseHandler(res, { error: "User was already register" }, 400);
       } else {
