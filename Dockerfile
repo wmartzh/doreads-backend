@@ -6,7 +6,7 @@ COPY ./package.json .
 
 RUN npm cache clean --force
 RUN npm install
-RUN npm build
+RUN npm run build
 COPY . .
 
 
