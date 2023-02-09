@@ -30,6 +30,12 @@ jobs:
           node-version: 16.x
           cache: 'yarn'
           cache-dependency-path: ./yarn.lock
+          
+      - name: Check node version
+        run: node --version
+        
+      - name: Install dependencies 
+        run: yarn install
 
       - name: Run linter
         run: yarn lint
