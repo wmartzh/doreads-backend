@@ -1,7 +1,6 @@
 import { Response } from "express";
 import { HttpError } from "./custom.error";
 import { ValidationError } from "joi";
-import { PrismaClientValidationError } from "@prisma/client/runtime";
 
 export class BaseController {
   /**
