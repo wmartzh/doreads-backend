@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { LoginSchema, RegisterUserSchema } from "../models/auth.models";
 import authService from "../services/auth.service";
 import { BaseController } from "../types/base.controller";
-import { Prisma } from "@prisma/client";
+// import { Prisma } from "@prisma/client";
 class AuthController extends BaseController {
-  async register(req: Request, res: Response) {
+  async register(: Request, res: Response) {
     try {
       const data = await RegisterUserSchema.validateAsync(req.body);
       const result = await authService.register(data);
