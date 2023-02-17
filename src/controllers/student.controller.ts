@@ -13,8 +13,12 @@ class StudentController extends BaseController{
     try{
       const studentData = await RegisterStudentSchema.validateAsync(req.body)
       this.responseHandler(res, await studentService.create(studentData), 200)
-    }catch(error){
-      this.errorHandler(res, error);
+    }catch(error: any){
+      if (error.code && error.code === "P2002") {
+        this.responseHandler(res, { error: "Student was already registered" }, 400);
+      } else {
+        this.errorHandler(res, error);
+      }
     }
   }
 }
