@@ -22,7 +22,7 @@ class StudentController extends BaseController{
     }
   }
   /**
-   * It validates the request body against the ChangeStudentStatusSchema, then calls the studentService.changeStudentStatus function, and finally sends the response
+   * It asks the studentId from the request body, then calls the studentService.changeStudentStatus function, and finally sends the response
    * @param {Request | any} req
    * @param {Response} res
    */
