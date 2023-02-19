@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { LoginSchema, RegisterUserSchema } from "../models/auth.models";
+import { LoginSchema, RegisterUserSchema, RefreshTokenSchema } from "../models/auth.models";
 import authService from "../services/auth.service";
 import { BaseController } from "../types/base.controller";
 
@@ -26,6 +26,16 @@ class AuthController extends BaseController {
     try {
       const data = await LoginSchema.validateAsync(req.body);
       const result = await authService.login(data.email, data.password);
+      this.responseHandler(res, result, 200);
+    } catch (error: any) {
+      this.errorHandler(res, error);
+    }
+  }
+
+  async resfreshToken(req: Request, res: Response) {
+    try {
+      const data = await RefreshTokenSchema.validateAsync(req.body);
+      const result = await authService.refreshToken(req.body.refreshToken);
       this.responseHandler(res, result, 200);
     } catch (error: any) {
       this.errorHandler(res, error);

@@ -3,4 +3,6 @@ import authController from "../controllers/auth.controller";
 
 export default Router()
   .post("/register", (req, res) => authController.register(req, res))
-  .post("/login", (req, res) => authController.login(req, res));
+  .post("/login", (req, res) => authController.login(req, res))
+  //refresh token
+  .post("/refreshToken", (req, res) => authController.resfreshToken(req, res));
