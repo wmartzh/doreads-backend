@@ -21,6 +21,27 @@ class StudentController extends BaseController{
       }
     }
   }
+  /**
+   * It validates the request body against the ChangeStudentStatusSchema, then calls the studentService.changeStudentStatus function, and finally sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async blockStudent(req: Request | any, res: Response){
+    try{
+      const result = await studentService.changeStudentStatus(req.body.studentId, "BLOCKED")
+      this.responseHandler(res, result, 200)
+    }catch(error: any){
+      this.errorHandler(res, error)
+    }
+  }
+  async unblockStudent(req: Request | any, res: Response){
+    try{
+      const result = await studentService.changeStudentStatus(req.body.studentId, "ACTIVE")
+      this.responseHandler(res, result, 200)
+    }catch(error: any){
+      this.errorHandler(res, error)
+    }
+  }
 }
 
 export default new StudentController();
