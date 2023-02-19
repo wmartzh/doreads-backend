@@ -4,4 +4,4 @@
 .env
 dist/
 .docker
-/prisma/migrations/
+/prisma/migrations
