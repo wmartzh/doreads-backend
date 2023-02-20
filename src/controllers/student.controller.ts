@@ -22,7 +22,7 @@ class StudentController extends BaseController{
     }
   }
   /**
-   * It calls the studentService.changeStudentStatus function, and finally sends the response
+   * It validates the request params against the ChangeStudentStatusSchema, then calls the studentService.changeStudentStatus function, and finally sends the response
    * @param {Request | any} req
    * @param {Response} res
    */
@@ -30,8 +30,6 @@ class StudentController extends BaseController{
     try{
       const studentData = await ChangeStudentStatusSchema.validateAsync(req.params)
       this.responseHandler(res, await studentService.changeStudentStatus(studentData.studentId, studentData.status), 200)
-      // const {studentId, status} = req.params     
-      // this.responseHandler(res, await studentService.changeStudentStatus(Number(studentId), status.toUpperCase()), 200)
     }catch(error: any){
       if (error.code && error.code === "P2025") {
         this.errorHandler(res, { error: "Student doesn't exist" });
