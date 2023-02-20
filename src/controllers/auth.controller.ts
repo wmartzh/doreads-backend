@@ -34,7 +34,8 @@ class AuthController extends BaseController {
 
   async resfreshToken(req: Request, res: Response) {
     try {
-      const result = await authService.refreshToken(req.body.refreshToken);
+      const data = await RefreshTokenSchema.validateAsync(req.body);
+      const result = await authService.refreshToken(data.refreshToken);
       this.responseHandler(res, result, 200);
     } catch (error: any) {
       this.errorHandler(res, error);
