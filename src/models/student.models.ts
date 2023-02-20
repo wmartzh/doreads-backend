@@ -8,3 +8,8 @@ export const RegisterStudentSchema = Joi.object({
     .required(),
   phone: Joi.number().required(),
 });
+
+export const ChangeStudentStatusSchema = Joi.object({
+  studentId: Joi.number().required(),
+  status: Joi.valid("ACTIVE", "BLOCKED", "INACTIVE").required(),
+});

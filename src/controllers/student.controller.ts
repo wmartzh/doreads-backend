@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { BaseController } from "../types/base.controller";
-import { RegisterStudentSchema } from "../models/student.models";
+import { RegisterStudentSchema, ChangeStudentStatusSchema } from "../models/student.models";
 import studentService from "../services/student.service";
 
 class StudentController extends BaseController{
@@ -26,29 +26,15 @@ class StudentController extends BaseController{
    * @param {Request | any} req
    * @param {Response} res
    */
-  async blockStudent(req: Request | any, res: Response){
+  async changeStudentStatus(req: Request | any, res: Response){
     try{
-      const result = await studentService.changeStudentStatus(req.body.studentId, "BLOCKED")
-      this.responseHandler(res, result, 200)
+      const studentData = await ChangeStudentStatusSchema.validateAsync(req.body)
+      this.responseHandler(res, await studentService.changeStudentStatus(studentData.studentId, studentData.status), 200)
     }catch(error: any){
       if (error.code && error.code === "P2025") {
         this.errorHandler(res, { error: "Student doesn't exist" });
-      } else {
-        this.errorHandler(res, error);
       }
-    }
-  }
-  async unblockStudent(req: Request | any, res: Response){
-    try{
-      const result = await studentService.changeStudentStatus(req.body.studentId, "ACTIVE")
-      //also send a unblocked student success message
-      this.responseHandler(res, result, 200)
-    }catch(error: any){
-      if (error.code && error.code === "P2025") {
-        this.errorHandler(res, { error: "Student doesn't exist" });
-      } else {
-        this.errorHandler(res, error);
-      }
+      this.errorHandler(res, error);
     }
   }
 }
