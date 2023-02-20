@@ -46,6 +46,20 @@ class AuthService {
     const accessToken = await this.generateAccessToken(user);
     return { accessToken };
   }
+  async refreshToken(refreshToken: string) {
+    const { SECRET_KEY } = process.env;
+    const promise: (token: string, key: string) => Promise<any> =
+      promisify(jwt.verify).bind(jwt);
+    const payload = await promise(refreshToken, SECRET_KEY || "");
+    const user = await userService.findUserByEmail(payload.email);
+    console.log(user);
+    if (!user) {
+      throw new HttpError("User doesn't exist", 404);
+    }
+    const accessToken = await this.generateAccessToken(user);
+    return { accessToken };
+  }
+  
 }
 export default new AuthService();
 
