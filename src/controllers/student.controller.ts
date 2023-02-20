@@ -22,19 +22,22 @@ class StudentController extends BaseController{
     }
   }
   /**
-   * It asks the studentId from the request body, then calls the studentService.changeStudentStatus function, and finally sends the response
+   * It calls the studentService.changeStudentStatus function, and finally sends the response
    * @param {Request | any} req
    * @param {Response} res
    */
   async changeStudentStatus(req: Request | any, res: Response){
     try{
-      const studentData = await ChangeStudentStatusSchema.validateAsync(req.body)
+      const studentData = await ChangeStudentStatusSchema.validateAsync(req.params)
       this.responseHandler(res, await studentService.changeStudentStatus(studentData.studentId, studentData.status), 200)
+      // const {studentId, status} = req.params     
+      // this.responseHandler(res, await studentService.changeStudentStatus(Number(studentId), status.toUpperCase()), 200)
     }catch(error: any){
       if (error.code && error.code === "P2025") {
         this.errorHandler(res, { error: "Student doesn't exist" });
+      } else {
+      this.errorHandler(res, error)
       }
-      this.errorHandler(res, error);
     }
   }
 }
