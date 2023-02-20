@@ -15,7 +15,7 @@ class StudentController extends BaseController{
       this.responseHandler(res, await studentService.create(studentData), 200)
     }catch(error: any){
       if (error.code && error.code === "P2002") {
-        this.responseHandler(res, { error: "Student was already registered" }, 400);
+        this.errorHandler(res, { error: "Student was already registered" });
       } else {
         this.errorHandler(res, error);
       }
