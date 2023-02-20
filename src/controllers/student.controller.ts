@@ -31,15 +31,24 @@ class StudentController extends BaseController{
       const result = await studentService.changeStudentStatus(req.body.studentId, "BLOCKED")
       this.responseHandler(res, result, 200)
     }catch(error: any){
-      this.errorHandler(res, error)
+      if (error.code && error.code === "P2025") {
+        this.responseHandler(res, { error: "Student doesn't exist" }, 404);
+      } else {
+        this.errorHandler(res, error);
+      }
     }
   }
   async unblockStudent(req: Request | any, res: Response){
     try{
       const result = await studentService.changeStudentStatus(req.body.studentId, "ACTIVE")
+      //also send a unblocked student success message
       this.responseHandler(res, result, 200)
     }catch(error: any){
-      this.errorHandler(res, error)
+      if (error.code && error.code === "P2025") {
+        this.responseHandler(res, { error: "Student doesn't exist" }, 404);
+      } else {
+        this.errorHandler(res, error);
+      }
     }
   }
 }
