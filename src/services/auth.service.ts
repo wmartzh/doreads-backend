@@ -47,7 +47,7 @@ class AuthService {
     return { accessToken };
   }
   async refreshToken(refreshToken: string) {
-    const { EXPIRATION_TOKEN, SECRET_KEY } = process.env;
+    const { SECRET_KEY } = process.env;
     const promise: (token: string, key: string) => Promise<any> =
       promisify(jwt.verify).bind(jwt);
     const payload = await promise(refreshToken, SECRET_KEY || "");
