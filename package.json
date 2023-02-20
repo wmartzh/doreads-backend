@@ -6,7 +6,7 @@
   "author": "wmartzh@gmail.com",
   "license": "MIT",
   "scripts": {
-    "build": "npx tsc",
+    "build": "tsc -p .",
     "start": "node dist/index.js",
     "dev": "nodemon index.ts",
     "lint": "eslint . --ext .ts "

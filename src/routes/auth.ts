@@ -6,4 +6,6 @@ export default Router()
  * Aca deberia ir como se documenta el endpoint de /register
  */
   .post("/register", (req, res) => authController.register(req, res))
-  .post("/login", (req, res) => authController.login(req, res));
+  .post("/login", (req, res) => authController.login(req, res))
+  //refresh token
+  .post("/refreshToken", (req, res) => authController.resfreshToken(req, res));
