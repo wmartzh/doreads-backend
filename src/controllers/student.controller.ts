@@ -32,7 +32,7 @@ class StudentController extends BaseController{
       this.responseHandler(res, result, 200)
     }catch(error: any){
       if (error.code && error.code === "P2025") {
-        this.responseHandler(res, { error: "Student doesn't exist" }, 404);
+        this.errorHandler(res, { error: "Student doesn't exist" });
       } else {
         this.errorHandler(res, error);
       }
@@ -45,7 +45,7 @@ class StudentController extends BaseController{
       this.responseHandler(res, result, 200)
     }catch(error: any){
       if (error.code && error.code === "P2025") {
-        this.responseHandler(res, { error: "Student doesn't exist" }, 404);
+        this.errorHandler(res, { error: "Student doesn't exist" });
       } else {
         this.errorHandler(res, error);
       }
