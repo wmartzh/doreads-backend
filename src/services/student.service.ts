@@ -1,7 +1,6 @@
-import { Student } from "@prisma/client"
-import prisma from "../database/client"
-import { CustomError } from "../types/custom.error"
-
+import { Student, StudentStatus } from "@prisma/client";
+import prisma from "../database/client";
+import { CustomError } from "../types/custom.error";
 
 class StudentService {
   /** It creates a new student in the database
@@ -66,20 +65,74 @@ class StudentService {
     }
     return studentById;
   }
-  ////permitir ordenar los resultados de estudiantes de la A-Z, codigo estudiante, id (id´s mas bajos mas antiguos) en orden ascendente y descendente.
-    /**
-   * It returns the list of students ordered by the specified field and order
-   * @param {string} order
-   * @param {string} orderBy
-   * @returns {Promise<Student[]>}
-   */
-  async list(order: string, orderBy: string): Promise<Student[]> {
-    let orderByObj: OrderBy = {};
-    orderByObj[orderBy] = order === "asc" ? 1 : -1;
-
-    return Student.find().sort(orderByObj);
+  async filterStudensAtoZ() {
+    const students = await prisma.student.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+    });
+    if (!students || students.length === 0) {
+      throw new CustomError("No students found");
+    }
+    return students;
   }
-  
+  async filterStudensZtoA() {
+    const students = await prisma.student.findMany({
+      orderBy: {
+        name: 'desc',
+      },
+    });
+    if (!students || students.length === 0) {
+      throw new CustomError("No students found");
+    }
+    return students;
+  }
+  async filterStudensCodeAsc(){
+    const students = await prisma.student.findMany({
+      orderBy: {
+        code: 'asc',
+      },
+    });
+    if (!students || students.length === 0) {
+      throw new CustomError("No students found");
+    }
+    return students;
+  }
+  async filterStudensCodeDesc(){
+    const students = await prisma.student.findMany({
+      orderBy: {
+        code: 'desc',
+      },
+    });
+    if (!students || students.length === 0) {
+      throw new CustomError("No students found");
+    }
+    return students;
+  }
+  async filterStudensIdAsc(){
+    const students = await prisma.student.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    if (!students || students.length === 0) {
+      throw new CustomError("No students found");
+    }
+    return students;
+  }
+  async filterStudensIdDesc(){
+    const students = await prisma.student.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+    });
+    if (!students || students.length === 0) {
+      throw new CustomError("No students found");
+    }
+    return students;
+  }
+
+
 }
 
 export default new StudentService();
