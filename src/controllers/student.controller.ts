@@ -66,6 +66,46 @@ class StudentController extends BaseController{
       this.errorHandler(res, { error: "Student doesn't exist" })
     }
   }
+  /**
+   * It calls the studentService.findStudentByName function, and finally sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async findStudentByName(req: Request, res: Response) {
+    try {
+      const name = req.params.name;
+      const student = await studentService.findStudentByName(name);
+      this.responseHandler(res, student, 200);
+    } catch (error: any) {
+      if (error.code && error.code === "P2002") {
+        this.responseHandler(
+          res,
+          { error: "Student name is not registered" },
+          400
+        );
+      } else {
+        this.errorHandler(res, error);
+      }
+    }
+  }
+  /**
+   * It calls the studentService.findStudentByCode function, and finally sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async findStudentByCode(req: Request | any, res: Response) {
+    try {
+      const code = Number(req.params.code);
+      const student = await studentService.findStudentByCode(code);
+      this.responseHandler(res, student, 200);
+    } catch (error: any) {
+      if (error.code && error.code === "P2002") {
+        this.responseHandler(res, { error: "Student code doesn't exist" }, 400);
+      } else {
+        this.errorHandler(res, error);
+      }
+    }
+  }
 }
 
 export default new StudentController();

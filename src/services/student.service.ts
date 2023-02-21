@@ -65,6 +65,44 @@ class StudentService {
     }
     return studentById;
   }
+  /**
+   * It gets a student by name
+   * @param {String} name - The student name
+   * @returns A promise
+   */
+  async findStudentByName(name: string) {
+    const students = await prisma.student.findMany({
+      where: {
+        OR: [
+          { name: { startsWith: name } },
+          { name: { contains: name } },
+          { name: { equals: name } },
+        ],
+      },
+    });
+    if (!students || students.length === 0) {
+      throw new CustomError("No students found");
+    }
+    return students;
+  }
+  /**
+   * It gets a student by code
+   * @param {number} code - The student code
+   * @returns A promise
+   */
+  async findStudentByCode(code: any) {
+    const students = await prisma.student.findMany({
+      where: {
+        OR: [
+          { code: { equals: code } },
+        ],
+      },
+    });
+    if (!students || students.length === 0) {
+      throw new CustomError("No students found");
+    }
+    return students;
+  }
 }
 
 export default new StudentService();
