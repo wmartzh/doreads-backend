@@ -19,6 +19,6 @@ export const UpdateStudentSchema = Joi.object({
   name: Joi.string(),
   email: Joi.string()
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } }),
-  status: Joi.string().valid("ACTIVE", "BLOCKED", "INACTIVE").insensitive(),
+  status: Joi.string().valid("ACTIVE", "BLOCKED", "INACTIVE"),
   phone: Joi.number(),
 }).min(1);
