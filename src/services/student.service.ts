@@ -38,26 +38,32 @@ class StudentService {
     return { message: "Student updated successfully" };
   }
   async findStudentByName(name: string) {
-    const student = await prisma.student.findMany({
+    const students = await prisma.student.findMany({
       where: {
-        name: name,
+        OR: [
+          { name: { startsWith: name } },
+          { name: { contains: name } },
+          { name: { equals: name } },
+        ],
       },
     });
-    if (!student) {
-      throw new CustomError("Student not found");
+    if (!students || students.length === 0) {
+      throw new CustomError("No students found");
     }
-    return student;
+    return students;
   }
   async findStudentByCode(code: any) {
-    const student = await prisma.student.findUnique({
+    const students = await prisma.student.findMany({
       where: {
-        code: code,
+        OR: [
+          { code: { equals: code } },
+        ],
       },
     });
-    if (!student) {
-      throw new CustomError("Student not found");
+    if (!students || students.length === 0) {
+      throw new CustomError("No students found");
     }
-    return student;
+    return students;
   }
 }
 
