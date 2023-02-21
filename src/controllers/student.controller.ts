@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { BaseController } from "../types/base.controller";
-import { RegisterStudentSchema } from "../models/student.models";
+import { RegisterStudentSchema, ListStudentSchema } from "../models/student.models";
 import studentService from "../services/student.service";
 
 class StudentController extends BaseController{
@@ -19,6 +19,20 @@ class StudentController extends BaseController{
       } else {
         this.errorHandler(res, error);
       }
+    }
+  }
+  ////permitir ordenar los resultados de estudiantes de la A-Z, codigo estudiante, id (id´s mas bajos mas antiguos) en orden ascendente y descendente.
+    /**
+   * It validates the request query against the ListStudentSchema, then calls the studentService.list function, and finally sends the response
+   * @param {Request} req
+   * @param {Response} res 
+   */
+  async list(req: Request, res: Response){
+    try{
+      const { order, orderBy } = await ListStudentSchema.validateAsync(req.query)
+      this.responseHandler(res, await studentService.list(order, orderBy), 200)
+    }catch(error: any){
+      this.errorHandler(res, error);
     }
   }
 }
