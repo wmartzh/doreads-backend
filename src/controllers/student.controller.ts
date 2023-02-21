@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { BaseController } from "../types/base.controller";
 import { RegisterStudentSchema, ChangeStudentStatusSchema } from "../models/student.models";
 import studentService from "../services/student.service";
-
+import { HttpError } from "../types/custom.error";
 class StudentController extends BaseController{
   /**
    * It validates the request body against the RegisterStudentSchema, then calls the studentService.create function, and finally sends the response
@@ -36,6 +36,34 @@ class StudentController extends BaseController{
       } else {
       this.errorHandler(res, error)
       }
+    }
+  }
+  /**
+   * It calls the studentService.getAllStudents function, and finally sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async getAllStudents(req: Request | any, res: Response){
+    try{
+      this.responseHandler(res, await studentService.getAllStudents(), 200)
+    }catch(error: any){
+      this.errorHandler(res, error)
+    }
+  }
+  /**
+   * It calls the studentService.getStudentById function, and finally sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async getStudentById(req: Request | any, res: Response){
+    try{
+      const { id } = req.params
+      if (!id) {
+        throw new HttpError({ error: "Student id is required" }, 400);
+      }
+      this.responseHandler(res, await studentService.getStudentById(Number(id)), 200)
+    }catch(error: any){
+      this.errorHandler(res, { error: "Student doesn't exist" })
     }
   }
 }
