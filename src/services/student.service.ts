@@ -37,6 +37,28 @@ class StudentService {
     }
     return { message: "Student updated successfully" };
   }
+  async findStudentByName(name: string) {
+    const student = await prisma.student.findMany({
+      where: {
+        name: name,
+      },
+    });
+    if (!student) {
+      throw new CustomError("Student not found");
+    }
+    return student;
+  }
+  async findStudentByCode(code: any) {
+    const student = await prisma.student.findUnique({
+      where: {
+        code: code,
+      },
+    });
+    if (!student) {
+      throw new CustomError("Student not found");
+    }
+    return student;
+  }
 }
 
 export default new StudentService();
