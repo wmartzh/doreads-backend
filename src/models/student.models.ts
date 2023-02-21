@@ -10,10 +10,8 @@ export const RegisterStudentSchema = Joi.object({
     .required(),
   phone: Joi.number().required(),
 });
-////permitir ordenar los resultados de estudiantes de la A-Z, codigo estudiante, id (id´s mas bajos mas antiguos) en orden ascendente y descendente.
-export const ListStudentSchema = Joi.object({
-  order: Joi.string().valid("asc", "desc").required().default("asc"),
-  orderBy: Joi.string().valid("name", "code", "id").default("name"),
 
+export const ChangeStudentStatusSchema = Joi.object({
+  studentId: Joi.number().required(),
+  status: Joi.string().valid("ACTIVE", "BLOCKED", "INACTIVE").insensitive().required(),
 });
-
