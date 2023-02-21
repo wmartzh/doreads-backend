@@ -66,6 +66,24 @@ class StudentController extends BaseController{
       this.errorHandler(res, { error: "Student doesn't exist" })
     }
   }
+  /**
+   * 
+   */
+  async deleteStudentById(req: Request | any, res: Response){
+    try {
+      const { id } = req.params;
+      if (!id) {
+        throw new HttpError({ error: "Student id is required" }, 400);
+      }
+      this.responseHandler(res, await studentService.deleteStudentById(Number(id), req.user.role), 200)
+    } catch (error: any) {
+      if (error.code && error.code === "P2025") {
+        this.errorHandler(res, { error: "Student doesn't exist" });
+      } else {
+      this.errorHandler(res, { error: "Only users with the admin role can perform this action" })
+      }
+    }
+  }
 }
 
 export default new StudentController();
