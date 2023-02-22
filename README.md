@@ -1,10 +1,10 @@
-# Express JS Boilerplate
+# Doreads API
 
-An basic express boilerplate for APIs
+APi for Doreads APP
 
 ## Requirements
 
-- Node 16.17 LTS
+- Node 18.x
 
 ## Dependencies
 
@@ -27,10 +27,14 @@ An basic express boilerplate for APIs
 npm run build ## compile source
 npm run start ## start compiled source on dis/ folder
 npm run dev ## watch mode
+npm run lint ## Run linter
+npm run test ## Run tests
 
 yarn build
 yarn start
 yarn dev
+yarn lint
+yarn test
 ```
 
 # Documentation
