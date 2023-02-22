@@ -7,4 +7,4 @@ COPY . .
 RUN yarn generate
 RUN yarn build
 EXPOSE 8080
-CMD ["yarn", "start"]
+CMD ["node", "./dist/index.js"]
