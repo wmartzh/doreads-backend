@@ -4,7 +4,7 @@ import * as http from "http";
 
 import morgan from "morgan";
 
-const app = express();
+export const app = express();
 
 app.use(morgan("dev"));
 

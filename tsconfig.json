@@ -17,5 +17,11 @@
     "incremental": true,
     "strict": true
   },
-  "exclude": ["dist","node_modules"]
+  "exclude": [
+    "dist",
+    "node_modules",
+    "./coverage", 
+    "__tests__", 
+    "jest.config.js"
+  ]
 }
