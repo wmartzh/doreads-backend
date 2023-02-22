@@ -1,15 +1,10 @@
-FROM node:16.17
-
+FROM node:18-alpine
 WORKDIR /app
-
-COPY ./package.json .
-
-RUN npm cache clean --force
-RUN npm install
-RUN npm run build
+COPY package*.json ./
+COPY yarn.lock ./
+RUN yarn install && yarn cache clean
 COPY . .
-
-
-CMD [ "node",'./dist/index.js' ]
-
+RUN yarn generate
+RUN yarn build
 EXPOSE 8080
+CMD ["yarn", "start"]
