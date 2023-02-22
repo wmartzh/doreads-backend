@@ -1,9 +1,11 @@
 name: Coverage
 on:
-    workflow_run:
-        workflows: ["Build"]
-        types:
-          - completed
+  pull_request:
+    branches:
+      - main
+      - DOR*
+      - feature/*
+      - fix/*
 jobs:
     coverage:
         runs-on: ubuntu-latest
