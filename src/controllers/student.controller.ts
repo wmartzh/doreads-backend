@@ -80,8 +80,8 @@ class StudentController extends BaseController{
       if (error.code && error.code === "P2025") {
         this.errorHandler(res, { error: "Student doesn't exist" });
       } else {
-      this.errorHandler(res, { error: "Only users with the admin role can perform this action" })
-      }
+        this.errorHandler(res, error);
+      }    
     }
   }
 }
