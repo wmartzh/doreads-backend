@@ -7,6 +7,7 @@ export default function router(app: Application): void {
   /**
    * Every source are specifed here
    */
+  app.get("/", (_req, res) => res.sendStatus(200));
   app.use("/auth", authRouter);
   app.use("/student", authMiddleware, studentRouter);
 }
