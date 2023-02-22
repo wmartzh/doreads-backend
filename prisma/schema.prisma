@@ -46,7 +46,7 @@ model Book {
   id        Int        @id @default(autoincrement())
   title     String
   author    String
-  isbn      Int        @unique
+  isbn      String     @unique
   category  String
   year      Int
   picture   String?
@@ -59,7 +59,7 @@ model Book {
 
 model BookInfo {
   id        Int        @id @default(autoincrement())
-  code      Int        @unique
+  code      String     @unique
   status    BookStatus @default(AVAILABLE)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -69,35 +69,35 @@ model BookInfo {
 }
 
 model Student {
-  id        Int        @id @default(autoincrement())
-  code      Int        @unique
+  id        Int           @id @default(autoincrement())
+  code      String        @unique
   name      String
-  email     String     @unique
+  email     String        @unique
   phone     String
   status    StudentStatus @default(ACTIVE)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
   loan      Loan[]
   penalty   Penalty[]
 }
 
 model Penalty {
-  id        Int        @id @default(autoincrement())
-  amount    Int
+  id        Int           @id @default(autoincrement())
+  amount    Float
   status    PenaltyStatus @default(UNPAYED)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  student   Student    @relation(fields: [studentId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  student   Student       @relation(fields: [studentId], references: [id])
   studentId Int
 }
 
 model Loan {
-  id        Int        @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   returnDate DateTime
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  student   Student    @relation(fields: [studentId], references: [id])
-  studentId Int
-  bookInfo  BookInfo   @relation(fields: [bookInfoId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  student    Student  @relation(fields: [studentId], references: [id])
+  studentId  Int
+  bookInfo   BookInfo @relation(fields: [bookInfoId], references: [id])
   bookInfoId Int
 }

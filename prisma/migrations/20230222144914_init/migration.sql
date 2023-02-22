@@ -28,7 +28,7 @@ CREATE TABLE "Book" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "author" TEXT NOT NULL,
-    "isbn" INTEGER NOT NULL,
+    "isbn" TEXT NOT NULL,
     "category" TEXT NOT NULL,
     "year" INTEGER NOT NULL,
     "picture" TEXT,
@@ -43,7 +43,7 @@ CREATE TABLE "Book" (
 -- CreateTable
 CREATE TABLE "BookInfo" (
     "id" SERIAL NOT NULL,
-    "code" INTEGER NOT NULL,
+    "code" TEXT NOT NULL,
     "status" "BookStatus" NOT NULL DEFAULT 'AVAILABLE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE "BookInfo" (
 -- CreateTable
 CREATE TABLE "Student" (
     "id" SERIAL NOT NULL,
-    "code" INTEGER NOT NULL,
+    "code" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE "Student" (
 -- CreateTable
 CREATE TABLE "Penalty" (
     "id" SERIAL NOT NULL,
-    "amount" INTEGER NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
     "status" "PenaltyStatus" NOT NULL DEFAULT 'UNPAYED',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

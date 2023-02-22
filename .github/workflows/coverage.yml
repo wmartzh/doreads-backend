@@ -1,0 +1,28 @@
+name: Coverage
+on:
+  pull_request:
+    branches:
+      - main
+      - DOR*
+      - feature/*
+      - fix/*
+jobs:
+    coverage:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: ArtiomTr/jest-coverage-report-action@v2
+              with:
+                test-script: yarn jest
+                package-manager: yarn
+                working-directory: ./src
+            - uses: ArtiomTr/jest-coverage-report-action@v2
+              # give the id for the step, to access outputs in another step.
+              id: coverage
+              with:
+                  # tell to the action to not attach comment.
+                  output: report-markdown
+            - uses: marocchino/sticky-pull-request-comment@v2
+              with:
+                  # pass output from the previous step by id.
+                  message: ${{ steps.coverage.outputs.report }}

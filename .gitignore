@@ -4,3 +4,6 @@
 .env
 dist/
 .docker
+.yarn
+.yarnrc.yml
+/coverage

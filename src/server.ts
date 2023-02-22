@@ -7,7 +7,7 @@ import morgan from "morgan";
 // Swagger Implementation
 import swaggerDocs from "./docs/swagger";
 
-const app = express();
+export const app = express();
 
 app.use(morgan("dev"));
 
