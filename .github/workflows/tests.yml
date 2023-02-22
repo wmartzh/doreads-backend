@@ -1,0 +1,48 @@
+name: Testing
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - main
+      - DOR*
+      - feature/*
+      - fix/*
+  pull_request:
+    branches:
+      - main
+      - DOR*
+      - feature/*
+      - fix/*
+
+jobs:
+  run_tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 17.x, 18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: 'yarn'
+          cache-dependency-path: ./yarn.lock
+          
+      - name: Check node version
+        run: node --version
+        
+      - name: Install dependencies 
+        run: yarn install
+      
+
+      - name: Running test
+        run: yarn test
+        working-directory: ./
+
+
