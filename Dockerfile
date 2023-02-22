@@ -6,5 +6,5 @@ RUN yarn install && yarn cache clean
 COPY . .
 RUN yarn generate
 RUN yarn build
-EXPOSE 8080
+EXPOSE 8000
 CMD ["node", "./dist/index.js"]
