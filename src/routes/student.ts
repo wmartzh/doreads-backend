@@ -7,3 +7,5 @@ export default Router()
   .post("/register", (req, res) => studentController.create(req, res))
   .get("/:studentId/change-status/:status", (req, res) => studentController.changeStudentStatus(req, res))
   .delete("/:id/delete", (req, res) => studentController.deleteStudentById(req, res))
+  .post("/:id/update", (req, res) => studentController.updateStudent(req, res));
+

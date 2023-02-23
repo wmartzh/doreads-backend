@@ -83,6 +83,26 @@ class StudentService {
     return { message: "Student deleted successfully" };
   }
    
+
+   * It updates the student's details
+   * @param {Student} student - The student whose details are to be updated
+   * @param {number} studentId - The student's id
+   * @returns A promise
+   */
+  async updateStudent(student: Student, studentId: number) {
+    const updateStudent = await prisma.student.update({
+      where: {
+        id: studentId,
+      },
+      data: {
+        ...student,
+      },
+    });
+    if (!updateStudent) {
+      throw new CustomError("Error updating student");
+    }
+    return { message: "Student updated successfully" };
+  }
 }
 
 export default new StudentService();
