@@ -1,6 +1,6 @@
-import { Student, StudentStatus } from "@prisma/client";
+import { Role, Student, StudentStatus } from "@prisma/client";
 import prisma from "../database/client";
-import { CustomError } from "../types/custom.error";
+import { CustomError, HttpError } from "../types/custom.error";
 
 class StudentService {
   /** It creates a new student in the database
@@ -66,6 +66,24 @@ class StudentService {
     return studentById;
   }
   /**
+   * It deletes a student by id, and locks the function to only be called by the admin
+   */    
+  async deleteStudentById(studentId: number, role: Role) {
+    if (role !== "ADMIN") {
+      return new HttpError("You are not authorized to perform this action", 401);
+    }
+    const deleteStudent = await prisma.student.delete({
+      where: {
+        id: studentId,
+      },
+    });
+    if (!deleteStudent) {
+      throw new CustomError("Error deleting student");
+    }
+    return { message: "Student deleted successfully" };
+  }
+   
+
    * It updates the student's details
    * @param {Student} student - The student whose details are to be updated
    * @param {number} studentId - The student's id

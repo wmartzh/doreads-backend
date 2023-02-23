@@ -67,6 +67,22 @@ class StudentController extends BaseController{
     }
   }
   /**
+   * 
+   */
+  async deleteStudentById(req: Request | any, res: Response){
+    try {
+      const { id } = req.params;
+      if (!id) {
+        throw new HttpError({ error: "Student id is required" }, 400);
+      }
+      this.responseHandler(res, await studentService.deleteStudentById(Number(id), req.user.role), 200)
+    } catch (error: any) {
+      if (error.code && error.code === "P2025") {
+        this.errorHandler(res, { error: "Student doesn't exist" });
+      } else {
+        this.errorHandler(res, error);
+      }    
+      
    * It validates the request params and body against the UpdateStudentSchema, then calls the studentService.updateStudent function, and finally sends the response
    * @param {Request | any} req
    * @param {Response} res
