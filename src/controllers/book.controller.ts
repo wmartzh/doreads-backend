@@ -4,7 +4,12 @@ import bookService from "../services/book.service";
 import { BaseController } from "../types/base.controller";
 
 class BookController extends BaseController {
-  async createBook(req: Request, res: Response) {
+  /**
+   * It validates the request body with the RegisterBookSchema, then calls the bookService.createBook function, and finally sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async createBook(req: Request | any, res: Response) {
     try {
       const data = await RegisterBookSchema.validateAsync(req.body);
       const result = await bookService.createBook(data);
