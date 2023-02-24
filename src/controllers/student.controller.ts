@@ -82,7 +82,9 @@ class StudentController extends BaseController{
       } else {
         this.errorHandler(res, error);
       }    
-      
+    }
+  }
+  /**
    * It validates the request params and body against the UpdateStudentSchema, then calls the studentService.updateStudent function, and finally sends the response
    * @param {Request | any} req
    * @param {Response} res

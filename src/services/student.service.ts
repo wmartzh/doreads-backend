@@ -83,7 +83,7 @@ class StudentService {
     return { message: "Student deleted successfully" };
   }
    
-
+  /**
    * It updates the student's details
    * @param {Student} student - The student whose details are to be updated
    * @param {number} studentId - The student's id
