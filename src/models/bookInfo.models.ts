@@ -1,7 +1,7 @@
 import * as Joi from "joi";
 
 export const AddBookSchema = Joi.object({
-  code: Joi.string().required(),
+  code: Joi.string().pattern(/^[A-Z]{3}-\d{4}-\d{4}$/).required(),
   bookId: Joi.number().required(),
 });
 
@@ -11,6 +11,6 @@ export const ChangeBookStatusSchema = Joi.object({
 });
 
 export const UpdateBookSchema = Joi.object({
-  code: Joi.string(),
+  code: Joi.string().pattern(/^[A-Z]{3}-\d{4}-\d{4}$/),
   status: Joi.string().valid("AVAILABLE", "LOANED", "UNAVAILABLE"),
 }).min(1);

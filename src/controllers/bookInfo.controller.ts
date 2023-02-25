@@ -17,6 +17,8 @@ class BookInfoController extends BaseController {
     } catch (error: any) {
       if (error.code && error.code === 'P2002') {
         this.errorHandler(res, { error: 'Book was already registered' });
+      } if (error.code && error.code === 'P2003') {
+        this.errorHandler(res, { error: "Book doesn't exist" });// This means that there is no book to make the relation
       } else {
         this.errorHandler(res, error);
       }
