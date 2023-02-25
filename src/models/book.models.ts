@@ -20,3 +20,24 @@ export const RegisterBookSchema = Joi.object({
   editorial: Joi.string(),
   language: Joi.string().required(),
 });
+
+export const UpdateBookSchema = Joi.object({
+  title: Joi.string(),
+  author: Joi.string(),
+  isbn: Joi.alternatives().try(
+    Joi.string()
+    .pattern(/^(\d{1,3})?-?(\d{1,5})?-?(\d{1,7})?-?(\d{1,6})?-?(\d{1})$/)
+    .length(17), //ISBN-13
+    Joi.string()
+    .pattern(/^(\d{1,5})?-?(\d{1,7})?-?(\d{1,6})?-?(\d{1})$/)
+    .length(13), //ISBN-10
+  ),
+  category: Joi.string(),
+  year: Joi.number().integer().min(0).max(2023),
+  picture: Joi.string().pattern(/^https?:\/\/.*\.(png|jpg|jpeg|gif)$/i).messages({
+    'string.pattern.base': 'Invalid image URL format. Please provide a valid URL for an image in .png, .jpg, .jpeg, or .gif format.',
+    'string.uri': 'Image URL must be a valid URI',
+  }),
+  editorial: Joi.string(),
+  language: Joi.string(),
+}).min(1);

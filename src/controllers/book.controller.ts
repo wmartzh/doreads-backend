@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { RegisterBookSchema } from "../models/book.models";
+import { RegisterBookSchema, UpdateBookSchema } from "../models/book.models";
 import bookService from "../services/book.service";
 import { BaseController } from "../types/base.controller";
 
@@ -16,7 +16,44 @@ class BookController extends BaseController {
       this.responseHandler(res, { message: `Book ${result.title} created successfully`}, 200);
     } catch (error: any) {
       if (error.code && error.code === "P2002") {
-        this.responseHandler(res, { error: "Book was already register" }, 400);
+        this.errorHandler(res, { error: "Book was already registered" });
+      } else {
+        this.errorHandler(res, error);
+      }
+    }
+  }
+  /**
+   * It validates the request body with the UpdateBookSchema, then calls the bookService.updateBook function, and finally sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async updateBook(req: Request | any, res: Response) {
+    try {
+      const { id } = req.params;
+      const data = await UpdateBookSchema.validateAsync(req.body);
+      const result = await bookService.updateBook(data, Number(id));
+      this.responseHandler(res, { message: `Book ${result.title} updated successfully`}, 200);
+    } catch (error: any) {
+      if (error.code && error.code === "P2025") {
+        this.errorHandler(res, { error: "Book doesn't exist" });
+      } else {
+        this.errorHandler(res, error);
+      }
+    }
+  }
+  /**
+   * It calls the bookService.deleteBook function, and sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async deleteBook(req: Request | any, res: Response) {
+    try {
+      const { id } = req.params;
+      const result = await bookService.deleteBook(Number(id), req.user.role);
+      this.responseHandler(res, { message: `Book ${result.title} deleted successfully`}, 200);
+    } catch (error: any) {
+      if (error.code && error.code === "P2025") {
+        this.errorHandler(res, { error: "Book doesn't exist" });
       } else {
         this.errorHandler(res, error);
       }
