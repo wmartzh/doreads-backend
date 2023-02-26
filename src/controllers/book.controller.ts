@@ -71,8 +71,22 @@ class BookController extends BaseController {
       if (!result) {
         this.errorHandler(res, { error: "Book doesn't exist" });
       } else {
-      this.responseHandler(res, result, 200);
+        this.responseHandler(res, result, 200);
       }
+    } catch (error: any) {
+      this.errorHandler(res, error);
+    }
+  }
+  /**
+   * It gets the query params, then calls the bookService.getBooks function, and sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async getBooks(req: Request | any, res: Response) {
+    try {
+      const { size = 10, page = 1} = req.query;
+      const result = await bookService.getBooks(Number(size), Number(page));
+      this.responseHandler(res, result, 200);
     } catch (error: any) {
       this.errorHandler(res, error);
     }

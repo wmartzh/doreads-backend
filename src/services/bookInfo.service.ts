@@ -66,6 +66,17 @@ class BookInfoService {
   async getBookByCode(code: string) {
     return await prisma.bookInfo.findUnique({ where: { code }, });
   }
+  /**
+   * It gets all books
+   * @param {number} size - The number of books to return
+   * @param {number} page - The page number
+   */
+  async getBooks(size: number, page: number) {
+    return await prisma.bookInfo.findMany({
+      take: size,
+      skip: (page - 1) * size,
+    });
+  }
 }
 
 export default new BookInfoService();

@@ -95,6 +95,20 @@ class BookInfoController extends BaseController {
       this.errorHandler(res, error);
     }
   }
+  /**
+   * It gets the query params, then calls the bookInfoService.getBooks function, and finally sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async getBooks(req: Request | any, res: Response) {
+    try {
+      const { size = 10, page = 1 } = req.query;
+      const result = await bookInfoService.getBooks(Number(size), Number(page));
+      this.responseHandler(res, result, 200);
+    } catch (error: any) {
+      this.errorHandler(res, error);
+    }
+  }
 }
 
 export default new BookInfoController();
