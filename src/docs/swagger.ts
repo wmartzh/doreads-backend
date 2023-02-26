@@ -1,5 +1,4 @@
-import { raw } from "@prisma/client/runtime";
-import swaggerJSDoc,{OAS3Definition,OAS3Options} from "swagger-jsdoc";
+import swaggerJSDoc from "swagger-jsdoc";
 import { Express, Request, Response } from "express";
 import swaggerUi from "swagger-ui-express"
 
