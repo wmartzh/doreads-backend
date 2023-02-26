@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { BaseController } from "../types/base.controller";
-import { RegisterStudentSchema, ChangeStudentStatusSchema } from "../models/student.models";
+import { RegisterStudentSchema, ChangeStudentStatusSchema, UpdateStudentSchema } from "../models/student.models";
 import studentService from "../services/student.service";
 import { HttpError } from "../types/custom.error";
 class StudentController extends BaseController{
@@ -67,54 +67,44 @@ class StudentController extends BaseController{
     }
   }
   /**
-   * It calls the studentService.filterStudensAtoZ function, and finally sends the response
+   * 
+   */
+  async deleteStudentById(req: Request | any, res: Response){
+    try {
+      const { id } = req.params;
+      if (!id) {
+        throw new HttpError({ error: "Student id is required" }, 400);
+      }
+      this.responseHandler(res, await studentService.deleteStudentById(Number(id), req.user.role), 200)
+    } catch (error: any) {
+      if (error.code && error.code === "P2025") {
+        this.errorHandler(res, { error: "Student doesn't exist" });
+      } else {
+        this.errorHandler(res, error);
+      }    
+    }
+  }
+  /**
+   * It validates the request params and body against the UpdateStudentSchema, then calls the studentService.updateStudent function, and finally sends the response
    * @param {Request | any} req
    * @param {Response} res
    */
-  async getStudentsFilterAtoZ(req: Request | any, res: Response){
+  async updateStudent(req: Request | any, res: Response){
     try{
-      this.responseHandler(res, await studentService.filterStudensAtoZ(), 200)
+      const { id } = req.params
+      if (!id) {
+        throw new HttpError({ error: "Student id is required" }, 400);
+      }
+      const studentData = await UpdateStudentSchema.validateAsync(req.body)
+      this.responseHandler(res, await studentService.updateStudent(studentData,Number(id)), 200)
     }catch(error: any){
+      if (error.code && error.code === "P2025") {
+        this.errorHandler(res, { error: "Student doesn't exist" });
+      } else {
       this.errorHandler(res, error)
+      }
     }
   }
-  async getStudentsFilterZtoA(req:Request | any, res: Response){
-    try{
-      this.responseHandler(res, await studentService.filterStudensZtoA(), 200)
-    }catch(error: any){
-      this.errorHandler(res, error)
-    }
-  }
-  async getStudentsFilterCodeAsc(req:Request | any, res: Response){
-    try{
-      this.responseHandler(res, await studentService.filterStudensCodeAsc(), 200)
-    }catch(error: any){
-      this.errorHandler(res, error)
-    }
-  }
-  async getStudentsFilterCodeDesc(req:Request | any, res: Response){
-    try{
-      this.responseHandler(res, await studentService.filterStudensCodeDesc(), 200)
-    }catch(error: any){
-      this.errorHandler(res, error)
-    }
-  }
-  async getStudentsFilterIdAsc(req:Request | any, res: Response){
-    try{
-      this.responseHandler(res, await studentService.filterStudensIdAsc(), 200)
-    }catch(error: any){
-      this.errorHandler(res, error)
-    }
-  }
-  async getStudentsFilterIdDesc(req:Request | any, res: Response){
-    try{
-      this.responseHandler(res, await studentService.filterStudensIdDesc(), 200)
-    }catch(error: any){
-      this.errorHandler(res, error)
-    }
-  }
-
-
 }
 
 export default new StudentController();

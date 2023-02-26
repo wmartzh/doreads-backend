@@ -1,6 +1,6 @@
-import { Student, StudentStatus } from "@prisma/client";
+import { Role, Student, StudentStatus } from "@prisma/client";
 import prisma from "../database/client";
-import { CustomError } from "../types/custom.error";
+import { CustomError, HttpError } from "../types/custom.error";
 
 class StudentService {
   /** It creates a new student in the database
@@ -65,74 +65,44 @@ class StudentService {
     }
     return studentById;
   }
-  async filterStudensAtoZ() {
-    const students = await prisma.student.findMany({
-      orderBy: {
-        name: 'asc',
+  /**
+   * It deletes a student by id, and locks the function to only be called by the admin
+   */    
+  async deleteStudentById(studentId: number, role: Role) {
+    if (role !== "ADMIN") {
+      return new HttpError("You are not authorized to perform this action", 401);
+    }
+    const deleteStudent = await prisma.student.delete({
+      where: {
+        id: studentId,
       },
     });
-    if (!students || students.length === 0) {
-      throw new CustomError("No students found");
+    if (!deleteStudent) {
+      throw new CustomError("Error deleting student");
     }
-    return students;
+    return { message: "Student deleted successfully" };
   }
-  async filterStudensZtoA() {
-    const students = await prisma.student.findMany({
-      orderBy: {
-        name: 'desc',
+   
+  /**
+   * It updates the student's details
+   * @param {Student} student - The student whose details are to be updated
+   * @param {number} studentId - The student's id
+   * @returns A promise
+   */
+  async updateStudent(student: Student, studentId: number) {
+    const updateStudent = await prisma.student.update({
+      where: {
+        id: studentId,
+      },
+      data: {
+        ...student,
       },
     });
-    if (!students || students.length === 0) {
-      throw new CustomError("No students found");
+    if (!updateStudent) {
+      throw new CustomError("Error updating student");
     }
-    return students;
+    return { message: "Student updated successfully" };
   }
-  async filterStudensCodeAsc(){
-    const students = await prisma.student.findMany({
-      orderBy: {
-        code: 'asc',
-      },
-    });
-    if (!students || students.length === 0) {
-      throw new CustomError("No students found");
-    }
-    return students;
-  }
-  async filterStudensCodeDesc(){
-    const students = await prisma.student.findMany({
-      orderBy: {
-        code: 'desc',
-      },
-    });
-    if (!students || students.length === 0) {
-      throw new CustomError("No students found");
-    }
-    return students;
-  }
-  async filterStudensIdAsc(){
-    const students = await prisma.student.findMany({
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    if (!students || students.length === 0) {
-      throw new CustomError("No students found");
-    }
-    return students;
-  }
-  async filterStudensIdDesc(){
-    const students = await prisma.student.findMany({
-      orderBy: {
-        id: 'desc',
-      },
-    });
-    if (!students || students.length === 0) {
-      throw new CustomError("No students found");
-    }
-    return students;
-  }
-
-
 }
 
 export default new StudentService();
