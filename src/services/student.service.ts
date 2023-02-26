@@ -42,8 +42,11 @@ class StudentService {
    * It gets all the students
    * @returns A promise
    */
-  async getAllStudents() {
-    const allStudents = await prisma.student.findMany();
+  async getAllStudents(limit : number, offset : number) { // Here we expect the pagination parameters
+    const allStudents = await prisma.student.findMany({
+      take: limit, // The limit of students to return
+      skip: offset // How much are we going to skip. Review the pagination middleware to know the predeterminated values
+    });
     if (!allStudents) {
       throw new CustomError("Error getting students");
     }

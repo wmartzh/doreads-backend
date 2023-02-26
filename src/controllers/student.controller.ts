@@ -3,6 +3,8 @@ import { BaseController } from "../types/base.controller";
 import { RegisterStudentSchema, ChangeStudentStatusSchema, UpdateStudentSchema } from "../models/student.models";
 import studentService from "../services/student.service";
 import { HttpError } from "../types/custom.error";
+import { RequestWithPagination } from '../types/req.pagination';
+
 class StudentController extends BaseController{
   /**
    * It validates the request body against the RegisterStudentSchema, then calls the studentService.create function, and finally sends the response
@@ -43,9 +45,10 @@ class StudentController extends BaseController{
    * @param {Request | any} req
    * @param {Response} res
    */
-  async getAllStudents(req: Request | any, res: Response){
+  async getAllStudents(req: RequestWithPagination | any, res: Response){ // Implementation of the pagination
     try{
-      this.responseHandler(res, await studentService.getAllStudents(), 200)
+      const { limit, offset } = req.pagination; // We set the pagination limit and the offset
+      this.responseHandler(res, await studentService.getAllStudents(limit,offset), 200) // We send the parameters to our service
     }catch(error: any){
       this.errorHandler(res, error)
     }
