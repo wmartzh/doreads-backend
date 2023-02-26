@@ -42,6 +42,14 @@ class BookService {
       throw new HttpError("You don't have permission to delete a book", 403);
     }
   }
+  /**
+   * It gets a book by ISBN
+   * @param {string} isbn - The book ISBN
+   * @returns A promise
+   */
+  async getBookByISBN(isbn: string) {
+    return await prisma.book.findUnique({ where: { isbn }, });
+  }
 }
 
 export default new BookService();

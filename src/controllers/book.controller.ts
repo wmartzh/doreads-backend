@@ -59,6 +59,24 @@ class BookController extends BaseController {
       }
     }
   }
+  /**
+   * It calls the bookService.getBookByISBN function, and sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async getBookByISBN(req: Request | any, res: Response) {
+    try {
+      const { isbn } = req.params;
+      const result = await bookService.getBookByISBN(isbn);
+      if (!result) {
+        this.errorHandler(res, { error: "Book doesn't exist" });
+      } else {
+      this.responseHandler(res, result, 200);
+      }
+    } catch (error: any) {
+      this.errorHandler(res, error);
+    }
+  }
 }
 
 export default new BookController();
