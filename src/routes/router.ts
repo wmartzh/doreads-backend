@@ -11,3 +11,5 @@ export default function router(app: Application): void {
   app.use("/auth", authRouter);
   app.use("/student", authMiddleware, studentRouter);
 }
+
+

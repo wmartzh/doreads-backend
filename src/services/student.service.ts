@@ -2,7 +2,12 @@ import { Role, Student, StudentStatus } from "@prisma/client";
 import prisma from "../database/client";
 import { CustomError, HttpError } from "../types/custom.error";
 
-class StudentService {
+
+export interface SortOptions {
+  filter: string;
+  sortBy: "asc" | "desc";
+}
+class StudentService {  
   /** It creates a new student in the database
    * @param {Student} student - The student data
    * @returns A promise
@@ -103,6 +108,23 @@ class StudentService {
     }
     return { message: "Student updated successfully" };
   }
+    /**
+   * It gets all students
+   * @param {number} size - The number of students to return
+   * @param {number} page - The page number
+   */
+    async filterStudent(size: number, page: number, sort: SortOptions ) {
+      return await prisma.student.findMany({
+        take: size,
+        skip: (page -1) * size,
+        orderBy: {
+          [sort.filter]: sort.sortBy,
+        },
+      });
+    } 
 }
 
 export default new StudentService();
+
+
+
