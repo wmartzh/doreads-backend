@@ -3,8 +3,8 @@ import swaggerUi from "swagger-ui-express";
 import docs from "./docs.json";
 
 function swaggerDocs(app: Express) {
-  const host = process.env.HOST;
-  const port = parseInt(process.env.POR || "8000");
+  const host = process.env.SWAGGER_HOST;
+  const port = parseInt(process.env.PORT || "8000");
 
   docs["servers"] = [
     {
