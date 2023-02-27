@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { RegisterBookSchema, UpdateBookSchema } from "../models/book.models";
 import bookService from "../services/book.service";
 import { BaseController } from "../types/base.controller";
+import { SortOptions } from "../services/book.service";
 
 class BookController extends BaseController {
   /**
@@ -84,8 +85,13 @@ class BookController extends BaseController {
    */
   async getBooks(req: Request | any, res: Response) {
     try {
-      const { size = 10, page = 1} = req.query;
-      const result = await bookService.getBooks(Number(size), Number(page));
+      const size = parseInt(req.query.size as string) || 10;
+      const page = parseInt(req.query.page as string) || 1;
+      const sort: SortOptions = {
+        filter: req.query.filter as string || 'id',
+        sortBy: (req.query.sort as string) === 'desc' ? 'desc' : 'asc',
+      };
+      const result = await bookService.getBooks(size, page, sort);
       this.responseHandler(res, result, 200);
     } catch (error: any) {
       this.errorHandler(res, error);

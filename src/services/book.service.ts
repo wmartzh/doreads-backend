@@ -2,6 +2,10 @@ import { Book, Role } from "@prisma/client";
 import { HttpError } from "../types/custom.error";
 import prisma from "../database/client";
 
+export interface SortOptions {
+  filter: string;
+  sortBy: "asc" | "desc";
+}
 class BookService {
   /**
    * It creates a new book
@@ -55,10 +59,13 @@ class BookService {
    * @param {number} size - The number of books to return
    * @param {number} page - The page number
    */
-  async getBooks(size: number, page: number) {
+  async getBooks(size: number, page: number, sort: SortOptions ) {
     return await prisma.book.findMany({
       take: size,
       skip: (page -1) * size,
+      orderBy: {
+        [sort.filter]: sort.sortBy,
+      },
     });
   } 
 }
