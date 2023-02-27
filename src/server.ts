@@ -9,10 +9,6 @@ import swaggerDocs from "./docs/swagger";
 
 export const app = express();
 
-app.use(morgan("dev"));
-
-app.use(json());
-
 export default class Server {
   //Load router
   router(routes: (app: Application) => void) {
@@ -21,10 +17,13 @@ export default class Server {
   }
   //Listen server
   listen(port: number, hostname: string): Application {
+    //apply global middlewares
+    app.use(morgan("dev"));
+    app.use(json());
+
     http.createServer(app).listen(port, hostname, () => {
       console.log(`⭐Server running and listen on http://${hostname}:${port} `);
-      // Calling the swagger service
-      swaggerDocs(app,port)
+      swaggerDocs(app);
     });
     return app;
   }
