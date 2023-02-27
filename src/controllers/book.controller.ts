@@ -3,7 +3,7 @@ import { RegisterBookSchema, UpdateBookSchema } from "../models/book.models";
 import bookService from "../services/book.service";
 import { BaseController } from "../types/base.controller";
 import { SortOptions } from "../services/book.service";
-
+import { PrismaClientValidationError } from "@prisma/client/runtime/library";
 class BookController extends BaseController {
   /**
    * It validates the request body with the RegisterBookSchema, then calls the bookService.createBook function, and finally sends the response
@@ -94,7 +94,11 @@ class BookController extends BaseController {
       const result = await bookService.getBooks(size, page, sort);
       this.responseHandler(res, result, 200);
     } catch (error: any) {
-      this.errorHandler(res, error);
+      if (error instanceof PrismaClientValidationError) {
+        this.errorHandler(res, { error: "Invalid filter query params" });
+      } else {
+        this.errorHandler(res, error);
+      }
     }
   }
 }
