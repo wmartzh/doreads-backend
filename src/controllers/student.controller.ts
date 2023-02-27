@@ -45,12 +45,22 @@ class StudentController extends BaseController{
    * @param {Request | any} req
    * @param {Response} res
    */
-  async getAllStudents(req: RequestWithPagination | any, res: Response){ // Implementation of the pagination
-    try{
-      const { limit, offset } = req.pagination; // We set the pagination limit and the offset
-      this.responseHandler(res, await studentService.getAllStudents(limit,offset), 200) // We send the parameters to our service
-    }catch(error: any){
-      this.errorHandler(res, error)
+  async getAllStudents(req: RequestWithPagination | any, res: Response) {
+    try {
+      const { limit, offset } = req.pagination;
+      const result = await studentService.getAllStudents(limit, offset);
+  
+      const response = {
+        data: result.data,
+        nextPage: result.nextPage,
+        lastPage: result.lastPage,
+        currentPage: result.currentPage,
+        size: result.size,
+      };
+  
+      this.responseHandler(res, response, 200);
+    } catch (error: any) {
+      this.errorHandler(res, error);
     }
   }
   /**

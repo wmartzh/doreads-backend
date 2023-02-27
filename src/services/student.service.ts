@@ -42,15 +42,30 @@ class StudentService {
    * It gets all the students
    * @returns A promise
    */
-  async getAllStudents(limit : number, offset : number) { // Here we expect the pagination parameters
-    const allStudents = await prisma.student.findMany({
-      take: limit, // The limit of students to return
-      skip: offset // How much are we going to skip. Review the pagination middleware to know the predeterminated values
-    });
-    if (!allStudents) {
+  async getAllStudents(limit: number, offset: number){
+    const count = await prisma.student.count()
+    const students = await prisma.student.findMany({
+        take: limit,
+        skip: offset,
+      })
+  
+    if (!students) {
       throw new CustomError("Error getting students");
     }
-    return allStudents;
+  
+    const size = students.length;
+    const currentPage = Math.floor(offset / limit) + 1;
+    const lastPage = Math.ceil(count / limit);
+  
+    const nextPage = currentPage < lastPage ? currentPage + 1 : undefined;
+  
+    return {
+      data: students,
+      nextPage,
+      lastPage,
+      currentPage,
+      size,
+    };
   }
   /**
    * It gets a student by id
