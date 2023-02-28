@@ -116,7 +116,7 @@ class StudentController extends BaseController{
    * This function will format every result of any patitions using the pagination
    * @param {any} result
    */
-  formatResult(result: any) {
+  private formatResult(result: any) {
     return {
       data: result.data,
       nextPage: result.nextPage,

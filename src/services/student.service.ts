@@ -114,7 +114,7 @@ class StudentService {
    * Format the result and return it
    * @returns A promise
    */
-  paginateResult(result: any, limit: number, offset: number, count: number) {
+  private paginateResult(result: any, limit: number, offset: number, count: number) {
     const size = result.length;
     const currentPage = Math.floor(offset / limit) + 1;
     const lastPage = Math.ceil(count / limit);
