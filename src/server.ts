@@ -7,11 +7,17 @@ import morgan from "morgan";
 // Swagger Implementation
 import swaggerDocs from "./docs/swagger";
 
+const allowedOrigins = ["*"];
+
+const options: cors.CorsOptions = {
+  origin: allowedOrigins,
+};
+
 export const app = express();
 //apply global middlewares
 app.use(morgan("dev"));
 app.use(json());
-app.use(cors);
+app.use(cors(options));
 
 export default class Server {
   //Load router
