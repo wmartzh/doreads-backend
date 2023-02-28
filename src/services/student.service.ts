@@ -42,30 +42,20 @@ class StudentService {
    * It gets all the students
    * @returns A promise
    */
-  async getAllStudents(limit: number, offset: number){
+  async getAllStudents(limit: number, offset: number) {
     const count = await prisma.student.count()
-    const students = await prisma.student.findMany({
-        take: limit,
-        skip: offset,
-      })
+    const result = await prisma.student.findMany({
+      take: limit,
+      skip: offset,
+    });
   
-    if (!students) {
+    if (!result) {
       throw new CustomError("Error getting students");
     }
   
-    const size = students.length;
-    const currentPage = Math.floor(offset / limit) + 1;
-    const lastPage = Math.ceil(count / limit);
+    const paginatedResult = this.paginateResult(result, limit, offset,count);
   
-    const nextPage = currentPage < lastPage ? currentPage + 1 : undefined;
-  
-    return {
-      data: students,
-      nextPage,
-      lastPage,
-      currentPage,
-      size,
-    };
+    return paginatedResult;
   }
   /**
    * It gets a student by id
@@ -100,7 +90,6 @@ class StudentService {
     }
     return { message: "Student deleted successfully" };
   }
-   
   /**
    * It updates the student's details
    * @param {Student} student - The student whose details are to be updated
@@ -121,6 +110,26 @@ class StudentService {
     }
     return { message: "Student updated successfully" };
   }
+ /**
+   * Format the result and return it
+   * @returns A promise
+   */
+  paginateResult(result: any, limit: number, offset: number, count: number) {
+    const size = result.length;
+    const currentPage = Math.floor(offset / limit) + 1;
+    const lastPage = Math.ceil(count / limit);
+  
+    const nextPage = currentPage < lastPage ? currentPage + 1 : undefined;
+  
+    return {
+      data: result,
+      nextPage,
+      lastPage,
+      currentPage,
+      size,
+    };
+  }
+  
 }
 
 export default new StudentService();

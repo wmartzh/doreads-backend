@@ -50,13 +50,7 @@ class StudentController extends BaseController{
       const { limit, offset } = req.pagination;
       const result = await studentService.getAllStudents(limit, offset);
   
-      const response = {
-        data: result.data,
-        nextPage: result.nextPage,
-        lastPage: result.lastPage,
-        currentPage: result.currentPage,
-        size: result.size,
-      };
+      const response = this.formatResult(result);
   
       this.responseHandler(res, response, 200);
     } catch (error: any) {
@@ -118,6 +112,20 @@ class StudentController extends BaseController{
       }
     }
   }
+  /**
+   * This function will format every result of any patitions using the pagination
+   * @param {any} result
+   */
+  formatResult(result: any) {
+    return {
+      data: result.data,
+      nextPage: result.nextPage,
+      lastPage: result.lastPage,
+      currentPage: result.currentPage,
+      size: result.size,
+    };
+  }
+  
 }
 
 export default new StudentController();
