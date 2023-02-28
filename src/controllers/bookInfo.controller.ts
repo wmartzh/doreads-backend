@@ -80,30 +80,13 @@ class BookInfoController extends BaseController {
     }
   }
   /**
-   * It calls the bookInfoService.getBookByCode function, and finally sends the response
-   */
-  async getBookByCode(req: Request | any, res: Response) {
-    try {
-      const { code } = req.params;
-      const result = await bookInfoService.getBookByCode(code);
-      if (!result) {
-        this.errorHandler(res, { error: "Book doesn't exist" });
-      } else {
-        this.responseHandler(res, result, 200);
-      }
-    } catch (error: any) {
-      this.errorHandler(res, error);
-    }
-  }
-  /**
-   * It gets the query params, then calls the bookInfoService.getBooks function, and finally sends the response
+   * It calls the bookInfoService.getBook function, and finally sends the response
    * @param {Request | any} req
    * @param {Response} res
    */
-  async getBooks(req: Request | any, res: Response) {
+  async getAllBooks(req: Request | any, res: Response) {
     try {
-      const { size = 10, page = 1 } = req.query;
-      const result = await bookInfoService.getBooks(Number(size), Number(page));
+      const result = await bookInfoService.getAllBooks();
       this.responseHandler(res, result, 200);
     } catch (error: any) {
       this.errorHandler(res, error);

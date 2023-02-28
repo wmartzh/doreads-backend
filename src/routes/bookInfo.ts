@@ -6,5 +6,4 @@ export default Router()
   .get("/:bookId/change-status/:status", (req, res) => bookInfoController.changeBookStatus(req, res))
   .put("/:id", (req, res) => bookInfoController.updateBook(req, res))
   .delete("/:id", (req, res) => bookInfoController.deleteBook(req, res))
-  .get("/:code", (req, res) => bookInfoController.getBookByCode(req, res))
-  .get("/", (req, res) => bookInfoController.getBooks(req, res));
+  .get("/", (req, res) => bookInfoController.getAllBooks(req, res));

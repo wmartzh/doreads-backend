@@ -47,27 +47,12 @@ class BookService {
     }
   }
   /**
-   * It gets a book by ISBN
-   * @param {string} isbn - The book ISBN
+   * It gets all books
    * @returns A promise
    */
-  async getBookByISBN(isbn: string) {
-    return await prisma.book.findUnique({ where: { isbn }, });
+  async getAllBooks(){
+    return await prisma.book.findMany();
   }
-  /**
-   * It gets all books
-   * @param {number} size - The number of books to return
-   * @param {number} page - The page number
-   */
-  async getBooks(size: number, page: number, sort: SortOptions ) {
-    return await prisma.book.findMany({
-      take: size,
-      skip: (page -1) * size,
-      orderBy: {
-        [sort.filter]: sort.sortBy,
-      },
-    });
-  } 
 }
 
 export default new BookService();
