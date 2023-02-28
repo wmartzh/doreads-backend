@@ -108,20 +108,30 @@ class StudentService {
     }
     return { message: "Student updated successfully" };
   }
-    /**
-   * It gets all students
-   * @param {number} size - The number of students to return
-   * @param {number} page - The page number
-   */
-    async filterStudent(size: number, page: number, sort: SortOptions ) {
-      return await prisma.student.findMany({
-        take: size,
-        skip: (page -1) * size,
-        orderBy: {
-          [sort.filter]: sort.sortBy,
-        },
-      });
-    } 
+  async searchStudent(search: string,  sort: SortOptions ) {
+    return await prisma.student.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+          {
+            code: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        ],
+      },
+      orderBy: {
+        [sort.filter]: sort.sortBy,
+      },
+    });
+  }
+
 }
 
 export default new StudentService();

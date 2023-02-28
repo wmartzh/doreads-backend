@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { BaseController } from "../types/base.controller";
 import { RegisterStudentSchema, ChangeStudentStatusSchema, UpdateStudentSchema } from "../models/student.models";
 import studentService from "../services/student.service";
-import { HttpError } from "../types/custom.error";
+import { CustomError, HttpError } from "../types/custom.error";
 import { SortOptions } from "../services/student.service";
 import { PrismaClientValidationError } from "@prisma/client/runtime";
 class StudentController extends BaseController{
@@ -107,29 +107,23 @@ class StudentController extends BaseController{
       }
     }
   }
-      /**
-   * It gets the query params, then calls the bookService.getBooks function, and sends the response
-   * @param {Request | any} req
-   * @param {Response} res
-   */
-  async filterStudent(req: Request | any, res: Response) {
+  async searchStudent(req: Request | any, res: Response) {
     try {
-      const size = parseInt(req.query.size as string) || 10;
-      const page = parseInt(req.query.page as string) || 1;
+      const { search } = req.query;
       const sort: SortOptions = {
         filter: req.query.filter as string || 'id',
         sortBy: (req.query.sort as string) === 'desc' ? 'desc' : 'asc',
       };
-      const result = await studentService.filterStudent(size, page, sort);
+      if (!search) {
+        throw new HttpError({ error: "Search query is required" }, 400);
+      }
+      const result = await studentService.searchStudent(search as string, sort);
       this.responseHandler(res, result, 200);
     } catch (error: any) {
-      if (error instanceof PrismaClientValidationError) {
-        this.errorHandler(res, { error: "Invalid filter query params" });
-      } else {
-        this.errorHandler(res, error);
-      }
+      this.errorHandler(res, error);
     }
   }
+
 
   }
 
