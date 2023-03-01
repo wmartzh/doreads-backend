@@ -4,6 +4,7 @@ import { RegisterStudentSchema, ChangeStudentStatusSchema, UpdateStudentSchema }
 import studentService from "../services/student.service";
 import { HttpError } from "../types/custom.error";
 import { RequestWithPagination } from '../types/req.pagination';
+import {formatResult} from "../helpers/pagination.helper"
 
 class StudentController extends BaseController{
   /**
@@ -50,7 +51,7 @@ class StudentController extends BaseController{
       const { limit, offset } = req.pagination;
       const result = await studentService.getAllStudents(limit, offset);
   
-      const response = this.formatResult(result);
+      const response = formatResult(result);
   
       this.responseHandler(res, response, 200);
     } catch (error: any) {
@@ -112,20 +113,6 @@ class StudentController extends BaseController{
       }
     }
   }
-  /**
-   * This function will format every result of any patitions using the pagination
-   * @param {any} result
-   */
-  private formatResult(result: any) {
-    return {
-      data: result.data,
-      nextPage: result.nextPage,
-      lastPage: result.lastPage,
-      currentPage: result.currentPage,
-      size: result.size,
-    };
-  }
-  
 }
 
 export default new StudentController();

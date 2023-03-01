@@ -1,6 +1,7 @@
 import { Role, Student, StudentStatus } from "@prisma/client";
 import prisma from "../database/client";
 import { CustomError, HttpError } from "../types/custom.error";
+import  {paginateResult}  from "../helpers/pagination.helper";
 
 class StudentService {
   /** It creates a new student in the database
@@ -53,7 +54,7 @@ class StudentService {
       throw new CustomError("Error getting students");
     }
   
-    const paginatedResult = this.paginateResult(result, limit, offset,count);
+    const paginatedResult = paginateResult(result, limit, offset,count);
   
     return paginatedResult;
   }
@@ -109,27 +110,7 @@ class StudentService {
       throw new CustomError("Error updating student");
     }
     return { message: "Student updated successfully" };
-  }
- /**
-   * Format the result and return it
-   * @returns A promise
-   */
-  private paginateResult(result: any, limit: number, offset: number, count: number) {
-    const size = result.length;
-    const currentPage = Math.floor(offset / limit) + 1;
-    const lastPage = Math.ceil(count / limit);
-  
-    const nextPage = currentPage < lastPage ? currentPage + 1 : undefined;
-  
-    return {
-      data: result,
-      nextPage,
-      lastPage,
-      currentPage,
-      size,
-    };
-  }
-  
+  } 
 }
 
 export default new StudentService();
