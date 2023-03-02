@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { LoginSchema, RegisterUserSchema, RefreshTokenSchema } from "../models/auth.models";
+import {
+  LoginSchema,
+  RegisterUserSchema,
+  RefreshTokenSchema,
+} from "../models/auth.models";
 import authService from "../services/auth.service";
 import { BaseController } from "../types/base.controller";
 
@@ -28,6 +32,10 @@ class AuthController extends BaseController {
       const result = await authService.login(data.email, data.password);
       this.responseHandler(res, result, 200);
     } catch (error: any) {
+      console.log(
+        "◉ ▶ file: auth.controller.ts:32 ▶ AuthController ▶ login ▶ error:",
+        error
+      );
       this.errorHandler(res, error);
     }
   }
