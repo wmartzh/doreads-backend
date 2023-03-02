@@ -5,6 +5,7 @@ import studentRouter from "./student";
 import bookRouter from "./book";
 import bookInfo from "./bookInfo";
 
+
 export default function router(app: Application): void {
   /**
    * Every source are specifed here
@@ -14,5 +15,4 @@ export default function router(app: Application): void {
   app.use("/student", authMiddleware, studentRouter);
   app.use("/book/info", authMiddleware, bookInfo);
   app.use("/book", authMiddleware, bookRouter);
-
 }

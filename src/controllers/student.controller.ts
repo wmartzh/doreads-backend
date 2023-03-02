@@ -3,6 +3,9 @@ import { BaseController } from "../types/base.controller";
 import { RegisterStudentSchema, ChangeStudentStatusSchema, UpdateStudentSchema } from "../models/student.models";
 import studentService from "../services/student.service";
 import { HttpError } from "../types/custom.error";
+import { RequestWithPagination } from '../types/req.pagination';
+import {formatResult} from "../helpers/pagination.helper"
+
 class StudentController extends BaseController{
   /**
    * It validates the request body against the RegisterStudentSchema, then calls the studentService.create function, and finally sends the response
@@ -43,11 +46,16 @@ class StudentController extends BaseController{
    * @param {Request | any} req
    * @param {Response} res
    */
-  async getAllStudents(req: Request | any, res: Response){
-    try{
-      this.responseHandler(res, await studentService.getAllStudents(), 200)
-    }catch(error: any){
-      this.errorHandler(res, error)
+  async getAllStudents(req: RequestWithPagination | any, res: Response) {
+    try {
+      const { limit, offset } = req.pagination;
+      const result = await studentService.getAllStudents(limit, offset);
+  
+      const response = formatResult(result);
+  
+      this.responseHandler(res, response, 200);
+    } catch (error: any) {
+      this.errorHandler(res, error);
     }
   }
   /**
