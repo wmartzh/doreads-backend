@@ -1,6 +1,7 @@
 import { Role, Student, StudentStatus } from "@prisma/client";
 import prisma from "../database/client";
 import { CustomError, HttpError } from "../types/custom.error";
+import  {paginateResult}  from "../helpers/pagination.helper";
 
 
 export interface SortOptions {
@@ -47,12 +48,20 @@ class StudentService {
    * It gets all the students
    * @returns A promise
    */
-  async getAllStudents() {
-    const allStudents = await prisma.student.findMany();
-    if (!allStudents) {
+  async getAllStudents(limit: number, offset: number) {
+    const count = await prisma.student.count()
+    const result = await prisma.student.findMany({
+      take: limit,
+      skip: offset,
+    });
+  
+    if (!result) {
       throw new CustomError("Error getting students");
     }
-    return allStudents;
+  
+    const paginatedResult = paginateResult(result, limit, offset,count);
+  
+    return paginatedResult;
   }
   /**
    * It gets a student by id
@@ -87,7 +96,6 @@ class StudentService {
     }
     return { message: "Student deleted successfully" };
   }
-   
   /**
    * It updates the student's details
    * @param {Student} student - The student whose details are to be updated
@@ -131,8 +139,6 @@ class StudentService {
        },
      });
    }
-
-  
 
 }
 

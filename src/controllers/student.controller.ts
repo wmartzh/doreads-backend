@@ -4,6 +4,8 @@ import { RegisterStudentSchema, ChangeStudentStatusSchema, UpdateStudentSchema }
 import studentService from "../services/student.service";
 import { HttpError } from "../types/custom.error";
 import { SortOptions } from "../services/student.service";
+import { RequestWithPagination } from '../types/req.pagination';
+import {formatResult} from "../helpers/pagination.helper"
 
 class StudentController extends BaseController{
   /**
@@ -38,6 +40,23 @@ class StudentController extends BaseController{
       } else {
       this.errorHandler(res, error)
       }
+    }
+  }
+  /**
+   * It calls the studentService.getAllStudents function, and finally sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async getAllStudents(req: RequestWithPagination | any, res: Response) {
+    try {
+      const { limit, offset } = req.pagination;
+      const result = await studentService.getAllStudents(limit, offset);
+  
+      const response = formatResult(result);
+  
+      this.responseHandler(res, response, 200);
+    } catch (error: any) {
+      this.errorHandler(res, error);
     }
   }
   /**
