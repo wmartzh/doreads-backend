@@ -1,17 +1,23 @@
 import express, { Application, json } from "express";
 
 import * as http from "http";
-
+import cors from "cors";
 import morgan from "morgan";
 
 // Swagger Implementation
 import swaggerDocs from "./docs/swagger";
 
+const allowedOrigins = ["*"];
+
+const options: cors.CorsOptions = {
+  origin: allowedOrigins,
+};
+
 export const app = express();
-
+//apply global middlewares
 app.use(morgan("dev"));
-
 app.use(json());
+app.use(cors(options));
 
 export default class Server {
   //Load router
@@ -23,8 +29,7 @@ export default class Server {
   listen(port: number, hostname: string): Application {
     http.createServer(app).listen(port, hostname, () => {
       console.log(`⭐Server running and listen on http://${hostname}:${port} `);
-      // Calling the swagger service
-      swaggerDocs(app,port)
+      swaggerDocs(app);
     });
     return app;
   }
