@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { BaseController } from "../types/base.controller";
 import { RegisterStudentSchema, ChangeStudentStatusSchema, UpdateStudentSchema } from "../models/student.models";
 import studentService from "../services/student.service";
-import { CustomError, HttpError } from "../types/custom.error";
+import { HttpError } from "../types/custom.error";
 import { SortOptions } from "../services/student.service";
-import { PrismaClientValidationError } from "@prisma/client/runtime";
+
 class StudentController extends BaseController{
   /**
    * It validates the request body against the RegisterStudentSchema, then calls the studentService.create function, and finally sends the response
@@ -39,18 +39,6 @@ class StudentController extends BaseController{
       this.errorHandler(res, error)
       }
     }
-  }
-  /**
-   * It calls the studentService.getAllStudents function, and finally sends the response
-   * @param {Request | any} req
-   * @param {Response} res
-   */
-  async getAllStudents(req: Request | any, res: Response){
-    try{
-      this.responseHandler(res, await studentService.getAllStudents(), 200)
-    }catch(error: any){
-      this.errorHandler(res, error)
-     }
   }
   /**
    * It calls the studentService.getStudentById function, and finally sends the response
@@ -107,23 +95,27 @@ class StudentController extends BaseController{
       }
     }
   }
-  async searchStudent(req: Request | any, res: Response) {
+  async getStudents(req: Request | any, res: Response) {
     try {
       const { search } = req.query;
       const sort: SortOptions = {
-        filter: req.query.filter as string || 'id',
+        filter: req.query.filter as string || 'name',
         sortBy: (req.query.sort as string) === 'desc' ? 'desc' : 'asc',
       };
-      if (!search) {
-        throw new HttpError({ error: "Search query is required" }, 400);
+  
+      let result;
+      if (search) {
+        result = await studentService.searchStudent(search as string, sort);
+      } else {
+        result = await studentService.getAllStudents();
       }
-      const result = await studentService.searchStudent(search as string, sort);
+  
       this.responseHandler(res, result, 200);
     } catch (error: any) {
       this.errorHandler(res, error);
     }
   }
-
+  
 
   }
 

@@ -108,29 +108,31 @@ class StudentService {
     }
     return { message: "Student updated successfully" };
   }
-  async searchStudent(search: string,  sort: SortOptions ) {
-    return await prisma.student.findMany({
-      where: {
-        OR: [
-          {
-            name: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-          {
-            code: {
-              contains: search,
-              mode: "insensitive",
-            },
-          },
-        ],
-      },
-      orderBy: {
-        [sort.filter]: sort.sortBy,
-      },
-    });
-  }
+   async searchStudent(search: string,  sort: SortOptions ) {
+     return await prisma.student.findMany({
+       where: {
+         OR: [
+           {
+             name: {
+               contains: search,
+               mode: "insensitive",
+             },
+           },
+           {
+             code: {
+               contains: search,
+               mode: "insensitive",
+             },
+           },
+         ],
+       },
+       orderBy: {
+         [sort.filter]: sort.sortBy,
+       },
+     });
+   }
+
+  
 
 }
 
