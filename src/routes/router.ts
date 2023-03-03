@@ -16,3 +16,5 @@ export default function router(app: Application): void {
   app.use("/book/info", authMiddleware, bookInfo);
   app.use("/book", authMiddleware, bookRouter);
 }
+
+

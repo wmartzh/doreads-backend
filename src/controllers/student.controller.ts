@@ -3,6 +3,7 @@ import { BaseController } from "../types/base.controller";
 import { RegisterStudentSchema, ChangeStudentStatusSchema, UpdateStudentSchema } from "../models/student.models";
 import studentService from "../services/student.service";
 import { HttpError } from "../types/custom.error";
+import { SortOptions } from "../services/student.service";
 import { RequestWithPagination } from '../types/req.pagination';
 import {formatResult} from "../helpers/pagination.helper"
 
@@ -113,6 +114,28 @@ class StudentController extends BaseController{
       }
     }
   }
-}
+  async getStudents(req: Request | any, res: Response) {
+    try {
+      const { search } = req.query;
+      const sort: SortOptions = {
+        filter: req.query.filter as string || 'name',
+        sortBy: (req.query.sort as string) === 'desc' ? 'desc' : 'asc',
+      };
+  
+      let result;
+      if (search) {
+        result = await studentService.searchStudent(search as string, sort);
+      } else {
+        result = await studentService.getAllStudents();
+      }
+  
+      this.responseHandler(res, result, 200);
+    } catch (error: any) {
+      this.errorHandler(res, error);
+    }
+  }
+  
+
+  }
 
 export default new StudentController();

@@ -3,7 +3,12 @@ import prisma from "../database/client";
 import { CustomError, HttpError } from "../types/custom.error";
 import  {paginateResult}  from "../helpers/pagination.helper";
 
-class StudentService {
+
+export interface SortOptions {
+  filter: string;
+  sortBy: "asc" | "desc";
+}
+class StudentService {  
   /** It creates a new student in the database
    * @param {Student} student - The student data
    * @returns A promise
@@ -110,7 +115,34 @@ class StudentService {
       throw new CustomError("Error updating student");
     }
     return { message: "Student updated successfully" };
-  } 
+  }
+   async searchStudent(search: string,  sort: SortOptions ) {
+     return await prisma.student.findMany({
+       where: {
+         OR: [
+           {
+             name: {
+               contains: search,
+               mode: "insensitive",
+             },
+           },
+           {
+             code: {
+               contains: search,
+               mode: "insensitive",
+             },
+           },
+         ],
+       },
+       orderBy: {
+         [sort.filter]: sort.sortBy,
+       },
+     });
+   }
+
 }
 
 export default new StudentService();
+
+
+

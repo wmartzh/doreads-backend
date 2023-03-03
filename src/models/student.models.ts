@@ -1,5 +1,7 @@
 import * as Joi from "joi";
 
+
+
 export const RegisterStudentSchema = Joi.object({
   code: Joi.string().required(),
   name: Joi.string().required(),
