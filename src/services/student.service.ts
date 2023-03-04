@@ -1,34 +1,27 @@
 import { Role, Student, StudentStatus } from "@prisma/client";
+import { SortOptions } from "../types/req.filter";
 import prisma from "../database/client";
-import { CustomError, HttpError } from "../types/custom.error";
+import { HttpError } from "../types/custom.error";
 import { paginateResult } from "../helpers/pagination.helper";
 import { getSearchQuery } from "../helpers/queries.helper";
-import { SortOptions } from "../types/req.filter";
 
 class StudentService {
-  /** It creates a new student in the database
+  /**
+   * It adds a new student
    * @param {Student} student - The student data
    * @returns A promise
    */
-  async create(student: Student) {
-    const newStudent = await prisma.student.create({
-      data: {
-        ...student,
-      },
-    });
-    if (!newStudent) {
-      throw new CustomError("Error creating student");
-    }
-    return { message: "Student created successfully" };
+  async addStudent(student: Student) {
+    return await prisma.student.create({ data: student });
   }
   /**
-   * It changes the student's status
+   * It changes the student status
    * @param {number} studentId - The student id
-   * @param {StudentStatus} status - The student status
+   * @param {string} status - The student status
    * @returns A promise
    */
   async changeStudentStatus(studentId: number, status: StudentStatus) {
-    const updateStudent = await prisma.student.update({
+    return await prisma.student.update({
       where: {
         id: studentId,
       },
@@ -36,22 +29,50 @@ class StudentService {
         status,
       },
     });
-    if (!updateStudent) {
-      throw new CustomError("Error updating student");
-    }
-    return { message: "Student updated successfully" };
   }
-
   /**
-   * It gets all the students
+   * It updates an existing student information
+   * @param {Student} student - The student to update
+   * @param {number} studentId - The student id
    * @returns A promise
    */
-  async getAllStudents( limit: number, offset: number, sortOption: SortOptions, search?: string, req?: any) {
-    const count = await prisma.student.count();
-    if (count === 0) {
-      throw new HttpError({ messsage: "Students not found" }, 404);
+  async updateStudent(student: Student, studentId: number) {  
+    return await prisma.student.update({
+      where: {
+        id: studentId,
+      },
+      data: student,
+    });
+  }
+  /**
+   * It deletes a student, only if the user is an admin
+   * @param {number} studentId - The student id
+   * @param {Role} role - The user role
+   * @returns A promise
+   */
+  async deleteStudent(studentId: number, role: Role) {
+    if (role === "ADMIN") {
+      return await prisma.student.delete({
+        where: {
+          id: studentId,
+        },
+      });
+    } else {
+      throw new HttpError("You don't have permission to delete a student", 403);
     }
-
+  }
+  /**
+   * It gets all students with pagination and filter middlewares
+   * @param {number} limit - The limit of results
+   * @param {number} offset - The offset of results
+   * @param {SortOptions} sortOption - The sort option
+   * @param {string} search - The search query
+   * @param {any} req - The request object
+   * @returns A promise
+   */
+  async getAllStudents(limit: number, offset: number, sortOption: SortOptions, search?: string, req?: any) {
+    const count = await prisma.student.count();
+    if (count === 0) { throw new HttpError("There are no students", 404);}
     const query: any = {
       take: limit,
       skip: offset,
@@ -59,13 +80,11 @@ class StudentService {
         [sortOption.order]: sortOption.sort,
       },
     };
-
     if (search) {
       query["where"] = getSearchQuery(["name", "code"], search);
     }
     const result = await prisma.student.findMany(query);
     const paginatedResult = paginateResult(result, limit, offset, count, req);
-
     return paginatedResult;
   }
   /**
@@ -74,55 +93,13 @@ class StudentService {
    * @returns A promise
    */
   async getStudentById(studentId: number) {
-    const studentById = await prisma.student.findUnique({
+    const student = await prisma.student.findUnique({
       where: {
         id: studentId,
       },
     });
-    if (!studentById) {
-      throw new CustomError("Error getting student");
-    }
-    return studentById;
-  }
-  /**
-   * It deletes a student by id, and locks the function to only be called by the admin
-   */
-  async deleteStudentById(studentId: number, role: Role) {
-    if (role !== "ADMIN") {
-      return new HttpError(
-        "You are not authorized to perform this action",
-        401
-      );
-    }
-    const deleteStudent = await prisma.student.delete({
-      where: {
-        id: studentId,
-      },
-    });
-    if (!deleteStudent) {
-      throw new CustomError("Error deleting student");
-    }
-    return { message: "Student deleted successfully" };
-  }
-  /**
-   * It updates the student's details
-   * @param {Student} student - The student whose details are to be updated
-   * @param {number} studentId - The student's id
-   * @returns A promise
-   */
-  async updateStudent(student: Student, studentId: number) {
-    const updateStudent = await prisma.student.update({
-      where: {
-        id: studentId,
-      },
-      data: {
-        ...student,
-      },
-    });
-    if (!updateStudent) {
-      throw new CustomError("Error updating student");
-    }
-    return { message: "Student updated successfully" };
+    if (!student) { throw new HttpError("Student not found", 404);}
+    return student;
   }
 }
 
