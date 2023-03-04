@@ -56,7 +56,7 @@ class BookService {
    */
   async getAllBooks(limit: number, offset: number, sortOption: SortOptions, search?: string, req?: any) {
     const count = await prisma.book.count();
-    if (count === 0) { throw new HttpError({ messsage: "Books not found" }, 404);}
+    if (count === 0) { throw new HttpError({ messsage: "There are no books" }, 404);}
     const query: any ={
       take: limit,
       skip: offset,
