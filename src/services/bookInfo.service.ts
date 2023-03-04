@@ -98,9 +98,7 @@ class BookInfoService {
         id: bookId,
       },
     });
-    if (!book) {
-      throw new HttpError("Book not found", 404);
-    }
+    if (!book) { throw new HttpError("Book not found", 404);}
     return book;
   }
 }
