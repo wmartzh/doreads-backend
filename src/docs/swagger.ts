@@ -20,7 +20,7 @@ function swaggerDocs(app: Express) {
     res.send(docs);
   });
 
-  console.log(`The documentation is aviable at http://${host}:${port}/api`);
+  console.log(`The documentation is available at http://${host}:${port}/api`);
 }
 
 export default swaggerDocs;
