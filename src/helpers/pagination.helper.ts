@@ -10,14 +10,14 @@ import { Request } from "express";
 
     let previousPage = null;
     if (currentPage > 1) {
-      const url = new URL(`${req.protocol}://${req.hostname}${req.originalUrl}`);
+      const url = new URL(`${req.protocol}://${req.headers.host}${req.originalUrl}`);
       url.searchParams.set("limit", limit.toString());
       url.searchParams.set("page", (currentPage - 1).toString());
       previousPage = url.toString();
     }
     let nextPage = null;
     if (currentPage < lastPage) {
-      const url = new URL(`${req.protocol}://${req.hostname}${req.originalUrl}`);
+      const url = new URL(`${req.protocol}://${req.headers.host}${req.originalUrl}`);
       url.searchParams.set("limit", limit.toString());
       url.searchParams.set("page", (currentPage + 1).toString());
       nextPage = url.toString();
