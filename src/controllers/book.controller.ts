@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { SortOptions } from "../types/req.filter";
 import { RegisterBookSchema, UpdateBookSchema } from "../models/book.models";
 import bookService from "../services/book.service";
 import { BaseController } from "../types/base.controller";
@@ -65,11 +66,29 @@ class BookController extends BaseController {
    */
   async getAllBooks(req: Request | any, res: Response) {
     try {
-      const result = await bookService.getAllBooks();
-      this.responseHandler(res, result, 200);    
+      const { limit, offset } = req.pagination;
+      const { search } = req.query;
+      const filter: SortOptions = req.filter;
+
+      const result = await bookService.getAllBooks(limit, offset, filter, search, req);
+      this.responseHandler(res, result, 200);
     } catch (error: any) {
       this.errorHandler(res, error);
     } 
+  }
+  /**
+   * It calls the bookService.getBookById function, and sends the response
+   * @param {Request | any} req
+   * @param {Response} res
+   */
+  async getBookById(req: Request | any, res: Response) {
+    try {
+      const { id } = req.params;
+      const result = await bookService.getBookById(Number(id));
+      this.responseHandler(res, result, 200);
+    } catch (error: any) {
+      this.errorHandler(res, error);
+    }
   }
 }
 
