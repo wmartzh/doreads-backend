@@ -1,9 +1,10 @@
 import { Router } from "express";
 import studentController from "../controllers/student.controller";
 import { paginationMiddleware } from "../middlewares/pagination.middleware";
+import { filterMiddleware } from "../middlewares/filter.middleware";
 
 export default Router()
-  .get("/", paginationMiddleware, (req, res) =>
+  .get("/", paginationMiddleware, filterMiddleware, (req, res) =>
     studentController.getStudents(req, res)
   )
   .post("/register", (req, res) => studentController.create(req, res))

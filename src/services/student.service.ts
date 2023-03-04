@@ -3,11 +3,8 @@ import prisma from "../database/client";
 import { CustomError, HttpError } from "../types/custom.error";
 import { paginateResult } from "../helpers/pagination.helper";
 import { getSearchQuery } from "../helpers/queries.helper";
+import { SortOptions } from "../types/req.filter";
 
-export interface SortOptions {
-  orderBy: string;
-  sortBy: "asc" | "desc";
-}
 class StudentService {
   /** It creates a new student in the database
    * @param {Student} student - The student data
@@ -49,14 +46,8 @@ class StudentService {
    * It gets all the students
    * @returns A promise
    */
-  async getAllStudents(
-    limit: number,
-    offset: number,
-    sortOption: SortOptions,
-    search?: string
-  ) {
+  async getAllStudents( limit: number, offset: number, sortOption: SortOptions, search?: string, req?: any) {
     const count = await prisma.student.count();
-
     if (count === 0) {
       throw new HttpError({ messsage: "Students not found" }, 404);
     }
@@ -65,21 +56,15 @@ class StudentService {
       take: limit,
       skip: offset,
       orderBy: {
-        [sortOption.orderBy]: sortOption.sortBy,
+        [sortOption.order]: sortOption.sort,
       },
     };
 
     if (search) {
       query["where"] = getSearchQuery(["name", "code"], search);
     }
-
     const result = await prisma.student.findMany(query);
-
-    if (!result) {
-      throw new CustomError("Error getting students");
-    }
-
-    const paginatedResult = paginateResult(result, limit, offset, count);
+    const paginatedResult = paginateResult(result, limit, offset, count, req);
 
     return paginatedResult;
   }

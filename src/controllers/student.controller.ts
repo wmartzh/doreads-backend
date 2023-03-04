@@ -1,15 +1,9 @@
 import { Request, Response } from "express";
 import { BaseController } from "../types/base.controller";
-import {
-  RegisterStudentSchema,
-  ChangeStudentStatusSchema,
-  UpdateStudentSchema,
-} from "../models/student.models";
+import { RegisterStudentSchema, ChangeStudentStatusSchema, UpdateStudentSchema } from "../models/student.models";
 import studentService from "../services/student.service";
 import { HttpError } from "../types/custom.error";
-import { SortOptions } from "../services/student.service";
-import { RequestWithPagination } from "../types/req.pagination";
-import { formatResult } from "../helpers/pagination.helper";
+import { SortOptions } from "../types/req.filter";
 
 class StudentController extends BaseController {
   /**
@@ -125,22 +119,20 @@ class StudentController extends BaseController {
   async getStudents(req: Request | any, res: Response) {
     try {
       const { limit, offset } = req.pagination;
-
-      const { search, orderBy, sortBy } = req.query;
-      const sortOptions: SortOptions = {
-        orderBy: orderBy || "name",
-        sortBy: sortBy || "asc",
-      };
+      const { search } = req.query;
+      const filter: SortOptions = req.filter;
 
       const result = await studentService.getAllStudents(
         limit,
         offset,
-        sortOptions,
-        search
+        filter,
+        search,
+        req
       );
 
       this.responseHandler(res, result, 200);
     } catch (error: any) {
+      console.log(error);
       this.errorHandler(res, error);
     }
   }
