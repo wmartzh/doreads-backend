@@ -62,7 +62,6 @@ class BookInfoService {
     }
   }
   /**
-   * It gets all books
    * It gets all books with the pagination and filter middlewares
    * @param {number} limit - The limit of books to return
    * @param {number} offset - The offset of books to return
