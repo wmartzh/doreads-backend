@@ -1,6 +1,9 @@
 import { BookInfo, BookStatus, Role } from "@prisma/client";
 import { HttpError } from "../types/custom.error";
 import prisma from "../database/client";
+import { SortOptions } from "../types/req.filter";
+import { getSearchQuery } from "../helpers/queries.helper";
+import { paginateResult } from "../helpers/pagination.helper";
 
 class BookInfoService {
   /**
@@ -59,11 +62,44 @@ class BookInfoService {
     }
   }
   /**
-   * It gets all books
+   * It gets all books with the pagination and filter middlewares
+   * @param {number} limit - The limit of books to return
+   * @param {number} offset - The offset of books to return
+   * @param {SortOptions} sortOption - The sort option
+   * @param {string} search - The search query
+   * @param {any} req - For the url in the pagination
    * @returns A promise
    */
-  async getAllBooks() {
-    return await prisma.bookInfo.findMany();
+  async getAllBooks(limit: number, offset: number, sortOption: SortOptions, search?: string, req?: any) {
+    const count = await prisma.bookInfo.count();
+    if (count === 0) { throw new HttpError({ messsage: "Book not found" }, 404);}
+    const query: any = {
+      take: limit,
+      skip: offset,
+      orderBy: {
+        [sortOption.order]: sortOption.sort,
+      },
+    };
+    if (search) {
+      query["where"] = getSearchQuery(["code"], search);
+    }
+    const result = await prisma.bookInfo.findMany(query);
+    const paginatedResult = paginateResult(result, limit, offset, count, req);
+    return paginatedResult;
+  }
+  /**
+   * It gets a book by id
+   * @param {number} bookId - The book id
+   * @returns A promise
+   */
+  async getBookById(bookId: number) {
+    const book = await prisma.bookInfo.findUnique({
+      where: {
+        id: bookId,
+      },
+    });
+    if (!book) { throw new HttpError("Book not found", 404);}
+    return book;
   }
 }
 

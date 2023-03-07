@@ -1,11 +1,10 @@
 import { Book, Role } from "@prisma/client";
 import { HttpError } from "../types/custom.error";
 import prisma from "../database/client";
+import { getSearchQuery } from "../helpers/queries.helper";
+import { paginateResult } from "../helpers/pagination.helper";
+import { SortOptions } from "../types/req.filter";
 
-export interface SortOptions {
-  filter: string;
-  sortBy: "asc" | "desc";
-}
 class BookService {
   /**
    * It creates a new book
@@ -47,11 +46,46 @@ class BookService {
     }
   }
   /**
-   * It gets all books
+   * It gets all books with the pagination and filter middlewares
+   * @param {number} limit - The limit of books to return
+   * @param {number} offset - The offset of books to return
+   * @param {SortOptions} sortOption - The sort option
+   * @param {string} search - The search query
+   * @param {any} req - For the url in the pagination
    * @returns A promise
    */
-  async getAllBooks(){
-    return await prisma.book.findMany();
+  async getAllBooks(limit: number, offset: number, sortOption: SortOptions, search?: string, req?: any) {
+    const count = await prisma.book.count();
+    if (count === 0) { throw new HttpError({ messsage: "There are no books" }, 404);}
+    const query: any ={
+      take: limit,
+      skip: offset,
+      orderBy: {
+        [sortOption.order]: sortOption.sort,
+      },
+    };
+    if (search) {
+      query["where"] = getSearchQuery(["isbn", "title"], search);
+    }
+    const result = await prisma.book.findMany(query);
+    const paginatedResult = paginateResult(result, limit, offset, count, req);
+    return paginatedResult;
+  }
+  /**
+   * It gets a book by id
+   * @param {number} bookId - The book id
+   * @returns A promise
+   */
+  async getBookById(bookId: number) {
+    const book = await prisma.book.findUnique({
+      where: {
+        id: bookId,
+      },
+    });
+    if (!book) {
+      throw new HttpError({ message: "Book not found" }, 404);
+    }
+    return book;
   }
 }
 
