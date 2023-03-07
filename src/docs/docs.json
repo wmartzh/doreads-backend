@@ -139,7 +139,7 @@
         }
       }
     },
-    "/students/register": {
+    "/student/register": {
       "post": {
         "tags": ["Student"],
         "summary": "Create a new student",
@@ -182,7 +182,7 @@
         }
       }
     },
-    "/students": {
+    "/student": {
       "get": {
         "tags": ["Student"],
         "summary": "Get a list of all students, including optional search and filter here",
@@ -249,7 +249,7 @@
         }
       }
     },
-    "/students/{id}": {
+    "/student/{id}": {
       "get": {
         "tags": ["Student"],
         "summary": "Get a student by ID",
@@ -294,10 +294,10 @@
         }
       }
     },
-    "/students/{studentId}/change-status/{status}": {
+    "/student/{studentId}/change-status/{status}": {
       "get": {
         "tags": ["Student"],
-        "summary": "Get student status by ID",
+        "summary": "Change student status by ID",
         "description": "Get the current status of a student by their ID and new status",
         "security": [
           {
@@ -306,8 +306,18 @@
         ],
         "parameters": [
           {
+            "name": "studentId",
+            "in": "path",
+            "description": "ID of the student to change status",
+            "required": true,
+            "readOnly": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "status",
-            "in": "query",
+            "in": "path",
             "description": "New status to update the student",
             "required": false,
             "schema": {
@@ -333,7 +343,7 @@
         }
       }
     },
-    "/students/{id}/delete": {
+    "/student/{id}/delete": {
       "delete": {
         "tags": ["Student"],
         "summary": "Delete a student by ID",
@@ -371,7 +381,7 @@
         }
       }
     },
-    "/students/{id}/update": {
+    "/student/{id}/update": {
       "post": {
         "tags": ["Student"],
         "summary": "Update student by ID",
@@ -398,7 +408,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Student"
+                "$ref": "#/components/studentupdatebody"
               }
             }
           }
@@ -428,9 +438,403 @@
           }
         }
       }
+    },
+    "/book/register": {
+      "post": {
+        "tags": ["Book"],
+        "summary": "Create a new Book",
+        "description": "Create a new Book with the provided information",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Book object to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/bookregister"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book Registred successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/book/{id}": {
+      "put": {
+        "tags": ["Book"],
+        "summary": "Update book by ID",
+        "description": "Update book details by providing the book ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of book to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Book object to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/bookregister"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated student details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied or request body does not match schema"
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized to update book details"
+          },
+          "404": {
+            "description": "book not found"
+          }
+        }
+      }
+    },
+    "/book/{id}/": {
+      "delete": {
+        "tags": ["Book"],
+        "summary": "Delete a book by ID",
+        "description": "Delete a book by ID with authentication token required",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the book to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "book deleted"
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized"
+          },
+          "404": {
+            "description": "book not found"
+          }
+        }
+      }
+    },
+    "/book": {
+      "get": {
+        "tags": ["Book"],
+        "summary": "Get all books",
+        "description": "Get all books with authentication token",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Books found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized"
+          },
+          "404": {
+            "description": "Books not found"
+          }
+        }
+      }
+    },
+    "/book/info/add": {
+      "post": {
+        "tags": ["BookInfo"],
+        "summary": "Create a new Book",
+        "description": "Create a new Book with the provided information",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Book object to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/bookadd"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book Registred successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/book/info/{bookId}/change-status/{status}": {
+      "get": {
+        "tags": ["BookInfo"],
+        "summary": "Change book status by ID",
+        "description": "Get the current status of a book by their ID and new status",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bookId",
+            "in": "path",
+            "description": "ID of the book to change status",
+            "required": true,
+            "readOnly": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "description": "New status to update the book",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["AVAIBLE", "LOANED", "UNAVAILABLE"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Changed book Status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "book not found"
+          }
+        }
+      }
+    },
+    "/book/info/{id}": {
+      "put": {
+        "tags": ["BookInfo"],
+        "summary": "Update book by ID",
+        "description": "Update book details by providing the book ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of book to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Book object to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/bookadd"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated student details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied or request body does not match schema"
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized to update book details"
+          },
+          "404": {
+            "description": "book not found"
+          }
+        }
+      }
+    },
+    "/book/info/{id}/": {
+      "delete": {
+        "tags": ["BookInfo"],
+        "summary": "Delete a book by ID",
+        "description": "Delete a book by ID with authentication token required",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the book to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "book deleted"
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized"
+          },
+          "404": {
+            "description": "book not found"
+          }
+        }
+      }
+    },
+    "/book/info/": {
+      "get": {
+        "tags": ["BookInfo"],
+        "summary": "Get all books",
+        "description": "Get all books with authentication token",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Books found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized"
+          },
+          "404": {
+            "description": "Books not found"
+          }
+        }
+      }
     }
 
   },
+  
     
 
   "components": {
@@ -451,6 +855,26 @@
           "type": "string"
         },
         "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "studentupdatebody": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "status":{
           "type": "string"
         }
       }
@@ -497,6 +921,49 @@
         },
         "password": {
           "type": "string"
+        }
+      }
+    },
+    "bookregister": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "isbn": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer"
+        },
+        "picture": {
+          "type": "string"
+        },
+        "editorial": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        }
+      }
+    },
+    "bookadd": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "bookId": {
+          "type": "integer"
         }
       }
     },
@@ -562,16 +1029,12 @@
               "$ref": "#/components/schemas/loan"
             }
           },
-          "penalty": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/penalty"
-            }
+          "penaltystatus": {
+            "type": "string",
+            "enum":["PAID", "UNPAYED"]
           }
         }
       },
-
-
 
       "Book": {
         "type": "object",
@@ -620,7 +1083,8 @@
             "type": "int"
           },
           "status": {
-            "type": "object"
+            "type": "string",
+            "enum": ["AVAIBLE", "LOANED","UNAVAILABLE"]
           },
           "book": {
             "type": "object"
@@ -629,7 +1093,8 @@
             "type": "int"
           },
           "loan": {
-            "type": "object"
+            "type": "string",
+            "enum":["student", "studentId", "bookInfo", "bookInfoId"]
           }
         }
       },
