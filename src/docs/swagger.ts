@@ -8,7 +8,7 @@ function swaggerDocs(app: Express) {
 
   docs["servers"] = [
     {
-      url: `http://${host}:${port}`,
+      url: `${host}:${port}`,
     },
   ];
 
@@ -20,7 +20,7 @@ function swaggerDocs(app: Express) {
     res.send(docs);
   });
 
-  console.log(`The documentation is available at http://${host}:${port}/api`);
+  console.log(`The documentation is available at ${host}:${port}/api`);
 }
 
 export default swaggerDocs;
