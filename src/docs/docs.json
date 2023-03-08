@@ -189,7 +189,7 @@
         "description": "Get a list of all students with optional search, orderBy, and sortBy parameters",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -256,7 +256,7 @@
         "description": "Get a student by ID with authentication token",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -301,7 +301,7 @@
         "description": "Get the current status of a student by their ID and new status",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -350,7 +350,7 @@
         "description": "Delete a student by ID with authentication token required",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -547,7 +547,7 @@
         "description": "Delete a book by ID with authentication token required",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -585,7 +585,7 @@
         "description": "Get all books with authentication token",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "responses": {
@@ -661,7 +661,7 @@
         "description": "Get the current status of a book by their ID and new status",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -768,7 +768,7 @@
         "description": "Delete a book by ID with authentication token required",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -806,7 +806,7 @@
         "description": "Get all books with authentication token",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
         "responses": {
@@ -838,6 +838,7 @@
     
 
   "components": {
+
 
 
 
@@ -1026,12 +1027,14 @@
           "loan": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/loan"
+              "$ref": "#/components/schemas/Loan"
             }
           },
-          "penaltystatus": {
-            "type": "string",
-            "enum":["PAID", "UNPAYED"]
+          "penalty": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Penalty"
+            }
           }
         }
       },
@@ -1137,10 +1140,11 @@
     },
     "securitySchemes": {
       "bearerAuth": {
-        "type": "http",
+        "type":"http",
         "name": "authorization",
         "in": "header",
-        "schema": "Bearer {token}"
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
