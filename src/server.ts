@@ -1,36 +1,33 @@
-import express, { Application, json } from "express";
-
+import { Application } from "express";
 import * as http from "http";
-import cors from "cors";
-import morgan from "morgan";
 
 // Swagger Implementation
 import swaggerDocs from "./docs/swagger";
 
-const whitelist = process.env.ALLOWED_ORIGINS?.split(",");
-
-const corsOptions: cors.CorsOptions = {
-  origin: whitelist || false,
-};
-
-export const app = express();
-//apply global middlewares
-app.use(morgan("dev"));
-app.use(json());
-app.use(cors(corsOptions));
-
 export default class Server {
-  //Load router
+  app: Application;
+  constructor(app: Application) {
+    this.app = app;
+  }
+  /**
+   * This function takes a function as an argument, and then calls that function, passing in the app
+   * object.
+   * @param configFunction - This is a function that takes an Application as a parameter.
+   * @returns The instance of the class.
+   */
+  globalConfig(configFunction: (app: Application) => void) {
+    configFunction(this.app);
+    return this;
+  }
   router(routes: (app: Application) => void) {
-    routes(app);
+    routes(this.app);
     return this;
   }
   //Listen server
   listen(port: number, hostname: string): Application {
-    http.createServer(app).listen(port, hostname, () => {
+    http.createServer(this.app).listen(port, hostname, () => {
       console.log(`⭐Server running and listen on http://${hostname}:${port} `);
-      swaggerDocs(app);
     });
-    return app;
+    return this.app;
   }
 }

@@ -1,8 +1,8 @@
-import { Express, Request, Response } from "express";
+import { Application, Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 import docs from "./docs.json";
 
-function swaggerDocs(app: Express) {
+function swaggerDocs(app: Application) {
   const host = process.env.SWAGGER_HOST;
   const port = parseInt(process.env.PORT || "8000");
 
