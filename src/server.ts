@@ -1,9 +1,6 @@
 import { Application } from "express";
 import * as http from "http";
 
-// Swagger Implementation
-import swaggerDocs from "./docs/swagger";
-
 export default class Server {
   app: Application;
   constructor(app: Application) {
