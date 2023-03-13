@@ -3,6 +3,9 @@ import { SortOptions } from "../types/req.filter";
 import { RegisterBookSchema, UpdateBookSchema } from "../models/book.models";
 import bookService from "../services/book.service";
 import { BaseController } from "../types/base.controller";
+import axios from "axios";
+import FormData from "form-data";
+
 class BookController extends BaseController {
   /**
    * It validates the request body with the RegisterBookSchema, then calls the bookService.createBook function, and finally sends the response
@@ -12,6 +15,17 @@ class BookController extends BaseController {
   async createBook(req: Request | any, res: Response) {
     try {
       const data = await RegisterBookSchema.validateAsync(req.body);
+      if (req.file) {
+        const fileBuffer = req.file.buffer;
+        const formData = new FormData();
+        formData.append('image', fileBuffer, {
+          filename: req.file.originalname,
+        });
+        const response = await axios.post('http://localhost:8001/upload', formData, {
+          headers: formData.getHeaders(),
+        });
+        data.picture = JSON.stringify(response.data)
+      }
       const result = await bookService.createBook(data);
       this.responseHandler(res, { message: `Book ${result.title} created successfully`}, 200);
     } catch (error: any) {
