@@ -23,6 +23,8 @@ class BookController extends BaseController {
     } catch (error: any) {
       if (error.code && error.code === "P2002") {
         this.errorHandler(res, { error: "Book was already registered" });
+      } else if (error.response && error.response.status === 400) {
+        this.errorHandler(res, error.response.data);
       } else {
         this.errorHandler(res, error);
       }
