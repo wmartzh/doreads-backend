@@ -12,7 +12,7 @@ class ImageService{
     const response = await axios.post(`${IMAGE_SERVER_URL}/upload`, formData, {
       headers: formData.getHeaders(),
     });
-    return JSON.stringify(response.data.imageName);
+    return `${IMAGE_SERVER_URL}/${response.data.imageName}`;  
   }
 }
 
