@@ -2,21 +2,29 @@ import { Request, Response } from "express";
 import { SortOptions } from "../types/req.filter";
 import { RegisterBookSchema, UpdateBookSchema } from "../models/book.models";
 import bookService from "../services/book.service";
+import imageService from "../services/image.service";
 import { BaseController } from "../types/base.controller";
+
 class BookController extends BaseController {
   /**
    * It validates the request body with the RegisterBookSchema, then calls the bookService.createBook function, and finally sends the response
    * @param {Request | any} req
    * @param {Response} res
    */
-  async createBook(req: Request | any, res: Response) {
+  async createBook(req: Request | any, res: Response): Promise<void> {
     try {
-      const data = await RegisterBookSchema.validateAsync(req.body);
+      const data = await RegisterBookSchema.validateAsync(req.body)
+      if (req.file) {
+        const picture = await imageService.uploadImage(req.file);
+        data.picture = picture;
+      } 
       const result = await bookService.createBook(data);
       this.responseHandler(res, { message: `Book ${result.title} created successfully`}, 200);
     } catch (error: any) {
       if (error.code && error.code === "P2002") {
         this.errorHandler(res, { error: "Book was already registered" });
+      } else if (error.response && error.response.status === 400) {
+        this.errorHandler(res, error.response.data);
       } else {
         this.errorHandler(res, error);
       }

@@ -13,10 +13,7 @@ export const RegisterBookSchema = Joi.object({
   ).required(),
   category: Joi.string().required(),
   year: Joi.number().integer().min(0).max(2023).required(),
-  picture: Joi.string().pattern(/^https?:\/\/.*\.(png|jpg|jpeg|gif)$/i).messages({
-    'string.pattern.base': 'Invalid image URL format. Please provide a valid URL for an image in .png, .jpg, .jpeg, or .gif format.',
-    'string.uri': 'Image URL must be a valid URI',
-  }),
+  picture: Joi.string(),
   editorial: Joi.string(),
   language: Joi.string().required(),
 });
@@ -34,10 +31,7 @@ export const UpdateBookSchema = Joi.object({
   ),
   category: Joi.string(),
   year: Joi.number().integer().min(0).max(2023),
-  picture: Joi.string().pattern(/^https?:\/\/.*\.(png|jpg|jpeg|gif)$/i).messages({
-    'string.pattern.base': 'Invalid image URL format. Please provide a valid URL for an image in .png, .jpg, .jpeg, or .gif format.',
-    'string.uri': 'Image URL must be a valid URI',
-  }),
+  picture: Joi.string(),
   editorial: Joi.string(),
   language: Joi.string(),
 }).min(1);
