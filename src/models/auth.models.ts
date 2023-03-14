@@ -16,7 +16,3 @@ export const LoginSchema = Joi.object({
 export const RefreshTokenSchema = Joi.object({
   refreshToken: Joi.string().required(),
 });
-
-export const ProfileSchema = Joi.object({
-  Token: Joi.string().required(),
-});
