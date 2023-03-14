@@ -60,8 +60,7 @@ class AuthService {
     return { accessToken };
   }
   async profile(user: User) {
-    const { password, ...rest } = user;
-    return rest;
+    return { ...user, password: undefined };
   }
 
 
