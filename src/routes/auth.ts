@@ -5,4 +5,5 @@ export default Router()
 
   .post("/register", (req, res) => authController.register(req, res))
   .post("/login", (req, res) => authController.login(req, res))
-  .post("/refreshToken", (req, res) => authController.resfreshToken(req, res));
+  .post("/refreshToken", (req, res) => authController.resfreshToken(req, res))
+  .get("/profile", (req, res) => authController.profile(req, res));

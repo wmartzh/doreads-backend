@@ -3,6 +3,7 @@ import {
   LoginSchema,
   RegisterUserSchema,
   RefreshTokenSchema,
+  ProfileSchema,
 } from "../models/auth.models";
 import authService from "../services/auth.service";
 import { BaseController } from "../types/base.controller";
@@ -49,6 +50,17 @@ class AuthController extends BaseController {
       this.errorHandler(res, error);
     }
   }
+  async profile(req: Request, res: Response) {
+    try {
+      const token = req.headers.authorization?.split(" ")[1];
+      const data = await ProfileSchema.validateAsync({ Token: token });
+      const result = await authService.profile(data.Token);
+      this.responseHandler(res, result, 200);
+    } catch (error: any) {
+      this.errorHandler(res, error);
+    }
+  }
+    
 }
 
 export default new AuthController();
