@@ -6,6 +6,9 @@ import {
 } from "../models/auth.models";
 import authService from "../services/auth.service";
 import { BaseController } from "../types/base.controller";
+interface RequestProfile extends Request {
+  user?: any;
+}
 
 class AuthController extends BaseController {
   async register(req: Request, res: Response) {
@@ -45,6 +48,15 @@ class AuthController extends BaseController {
       this.errorHandler(res, error);
     }
   }
+  async profile(req: RequestProfile, res: Response) {
+    try {
+      const result = await authService.profile(req.user);
+      this.responseHandler(res, result, 200);
+    } catch (error: any) {
+      this.errorHandler(res, error);
+    }
+  }
+    
 }
 
 export default new AuthController();

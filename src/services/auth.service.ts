@@ -59,7 +59,11 @@ class AuthService {
     const accessToken = await this.generateAccessToken(user);
     return { accessToken };
   }
-  
+  async profile(user: User) {
+    return { ...user, password: undefined };
+  }
+
+
 }
 export default new AuthService();
 
