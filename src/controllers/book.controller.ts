@@ -50,7 +50,6 @@ class BookController extends BaseController {
           await bookService.uploadPicture(picture, result.id);
           this.responseHandler(res, { message: `Book ${result.title} updated successfully`}, 200);
         } catch (error:any) {
-          console.log(data);
           if (Object.keys(data).length === 0) {
             this.errorHandler(res, { message: `Image server error uploading the picture` ,error: error.error});
           } else {
