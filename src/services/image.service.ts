@@ -1,5 +1,6 @@
 import axios from "axios";
 import FormData from "form-data";
+import { HttpError } from "../types/custom.error";
 
 class ImageService{
   async uploadImage(file: Express.Multer.File){
@@ -11,6 +12,8 @@ class ImageService{
     });
     const response = await axios.post(`${IMAGE_SERVER_URL}/upload`, formData, {
       headers: formData.getHeaders(),
+    }).catch((error) => {
+      throw new HttpError(error.response.data.error, error.response.status);
     });
     return `${IMAGE_SERVER_URL}/${response.data.imageName}`;  
   }

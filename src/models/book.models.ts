@@ -32,4 +32,4 @@ export const UpdateBookSchema = Joi.object({
   year: Joi.number().integer().min(0).max(2023),
   editorial: Joi.string(),
   language: Joi.string(),
-}).min(1);
+});
