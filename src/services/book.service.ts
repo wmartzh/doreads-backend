@@ -29,6 +29,22 @@ class BookService {
     });
   }
   /**
+   * It uploads the picture url from the external server to the database
+   * @param {string} picture - The image url
+   * @param {number} bookId - The book id
+   * @returns A promise
+   */
+  async uploadPicture(picture: Book["picture"], bookId: number) {
+    return await prisma.book.update({
+      where: {
+        id: bookId,
+      },
+      data: {
+        picture,
+      },
+    });
+  }
+  /**
    * It deletes a book, only if the user is an admin
    * @param {number} bookId - The book id
    * @param {Role} role - The user role

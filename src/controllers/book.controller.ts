@@ -11,20 +11,20 @@ class BookController extends BaseController {
    * @param {Request | any} req
    * @param {Response} res
    */
-  async createBook(req: Request | any, res: Response): Promise<void> {
+  async createBook(req: Request | any, res: Response) {
     try {
       const data = await RegisterBookSchema.validateAsync(req.body)
+      const result = await bookService.createBook(data);
       if (req.file) {
         const picture = await imageService.uploadImage(req.file);
-        data.picture = picture;
+        await bookService.uploadPicture(picture, result.id);
       } 
-      const result = await bookService.createBook(data);
       this.responseHandler(res, { message: `Book ${result.title} created successfully`}, 200);
     } catch (error: any) {
       if (error.code && error.code === "P2002") {
         this.errorHandler(res, { error: "Book was already registered" });
       } else if (error.response && error.response.status === 400) {
-        this.errorHandler(res, error.response.data);
+        this.responseHandler(res, { message: "Book created successfully, but error uploading image" ,error: error.response.data}, 300);
       } else {
         this.errorHandler(res, error);
       }

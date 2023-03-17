@@ -13,7 +13,6 @@ export const RegisterBookSchema = Joi.object({
   ).required(),
   category: Joi.string().required(),
   year: Joi.number().integer().min(0).max(2023).required(),
-  picture: Joi.string(),
   editorial: Joi.string(),
   language: Joi.string().required(),
 });
@@ -31,7 +30,6 @@ export const UpdateBookSchema = Joi.object({
   ),
   category: Joi.string(),
   year: Joi.number().integer().min(0).max(2023),
-  picture: Joi.string(),
   editorial: Joi.string(),
   language: Joi.string(),
 }).min(1);

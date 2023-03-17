@@ -8,7 +8,7 @@ const upload = multer();
 
 export default Router()
   .post("/register", upload.single("image"), (req, res) => bookController.createBook(req, res))
-  .put("/:id", (req, res) => bookController.updateBook(req, res))
+  .put("/:id", upload.single("image"), (req, res) => bookController.updateBook(req, res))
   .delete("/:id", (req, res) => bookController.deleteBook(req, res))
   .get("/", paginationMiddleware, filterMiddleware, (req, res) => bookController.getAllBooks(req, res))
   .get("/:id", (req, res) => bookController.getBookById(req, res));
