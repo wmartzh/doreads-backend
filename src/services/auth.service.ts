@@ -4,22 +4,51 @@ import { HttpError } from "../types/custom.error";
 import userService from "./user.service";
 import * as jwt from "jsonwebtoken";
 import { promisify } from "util";
+import { writeFileSync } from "fs";
+
+import blackList from "../../blacklist.json";
+const filename = "../../blacklist.json";
+export interface VerifyTokenData {
+  user: string;
+  isAccess?: boolean;
+  isRefresh?: boolean;
+}
+export interface AuthPayload {
+  email: string;
+  verify: string;
+}
 class AuthService {
-  private hashPassword(password: string) {
+  private generateHash(value: string) {
     const saltRounds = genSaltSync(10);
 
-    return hashSync(password, saltRounds);
+    return hashSync(value, saltRounds);
   }
   private validatePassword(hash: string, password: string) {
     return compareSync(password, hash);
   }
-  private generateAccessToken(user: User) {
+
+  private generateVerifyHash(email: string, isAccess?: boolean): string {
+    const data: VerifyTokenData = {
+      user: email,
+    };
+    if (isAccess) {
+      data.isAccess = true;
+    } else {
+      data.isRefresh = true;
+    }
+    return this.generateHash(JSON.stringify(data));
+  }
+
+  private generateToken(user: User, isAccess = true) {
     const { EXPIRATION_TOKEN, SECRET_KEY } = process.env;
     const promise: (payload: any, key: string, options: any) => Promise<any> =
       promisify(jwt.sign).bind(jwt);
+
+    const verfyHash = this.generateVerifyHash(user.email, isAccess);
     return promise(
       {
         email: user.email,
+        verfy: verfyHash,
       },
       SECRET_KEY || "",
       {
@@ -27,10 +56,15 @@ class AuthService {
       }
     );
   }
+  private async generatePairToken(user: User) {
+    const accessToken = await this.generateToken(user);
+    const refreshToken = await this.generateToken(user, false);
+    return { accessToken, refreshToken };
+  }
   register(user: User) {
     const { password, ...rest } = user;
     return userService.createUser({
-      password: this.hashPassword(password),
+      password: this.generateHash(password),
       ...rest,
     });
   }
@@ -43,23 +77,36 @@ class AuthService {
     if (!this.validatePassword(user.password, password)) {
       throw new HttpError("Password doesn't match", 401);
     }
-    const accessToken = await this.generateAccessToken(user);
-    return { accessToken };
+    return this.generatePairToken(user);
   }
+
+  async logOut(token: string) {
+    const list: string[] = blackList || [];
+    list.push(token);
+    writeFileSync(filename, JSON.stringify(blackList));
+  }
+
   async refreshToken(refreshToken: string) {
     const { SECRET_KEY } = process.env;
-    const promise: (token: string, key: string) => Promise<any> =
-      promisify(jwt.verify).bind(jwt);
-    const payload = await promise(refreshToken, SECRET_KEY || "");
+    const verifyAsync: any = promisify(jwt.verify).bind(jwt);
+
+    const payload: AuthPayload = await verifyAsync(
+      refreshToken,
+      SECRET_KEY || ""
+    );
+
     const user = await userService.findUserByEmail(payload.email);
-    console.log(user);
     if (!user) {
       throw new HttpError("User doesn't exist", 404);
     }
-    const accessToken = await this.generateAccessToken(user);
-    return { accessToken };
+
+    const verify = JSON.stringify({ user: user.email, isRefresh: true });
+
+    if (!compareSync(verify, payload.verify)) {
+      throw new HttpError("Invalid token pair", 401);
+    }
+
+    return this.generatePairToken(user);
   }
-  
 }
 export default new AuthService();
-

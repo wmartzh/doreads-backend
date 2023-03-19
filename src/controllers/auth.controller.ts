@@ -35,6 +35,21 @@ class AuthController extends BaseController {
       this.errorHandler(res, error);
     }
   }
+  async logout(req: Request, res: Response) {
+    try {
+      const token: string = req.headers.authorization?.split(" ")[1] || "";
+      await authService.logOut(token);
+      this.responseHandler(
+        res,
+        {
+          message: "User was logged out succesfully",
+        },
+        200
+      );
+    } catch (error: any) {
+      this.errorHandler(res, error);
+    }
+  }
 
   async resfreshToken(req: Request, res: Response) {
     try {
