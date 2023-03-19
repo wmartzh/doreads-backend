@@ -108,5 +108,8 @@ class AuthService {
 
     return this.generatePairToken(user);
   }
+  async profile(user: User) {
+    return { ...user, password: undefined };
+  }
 }
 export default new AuthService();
