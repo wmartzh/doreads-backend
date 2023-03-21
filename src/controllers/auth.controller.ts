@@ -29,10 +29,14 @@ class AuthController extends BaseController {
     }
   }
 
-  async login(req: Request, res: Response) {
+  async login(req: Request & { agent?: string }, res: Response) {
     try {
       const data = await LoginSchema.validateAsync(req.body);
-      const result = await authService.login(data.email, data.password);
+      const result = await authService.login(
+        data.email,
+        data.password,
+        req.agent
+      );
       this.responseHandler(res, result, 200);
     } catch (error: any) {
       this.errorHandler(res, error);
@@ -54,12 +58,18 @@ class AuthController extends BaseController {
     }
   }
 
-  async resfreshToken(req: Request, res: Response) {
+  async resfreshToken(req: Request & { agent?: string }, res: Response) {
     try {
       const data = await RefreshTokenSchema.validateAsync(req.body);
-      const result = await authService.refreshToken(data.refreshToken);
+      const result = await authService.refreshToken(
+        data.refreshToken,
+        req.agent
+      );
       this.responseHandler(res, result, 200);
     } catch (error: any) {
+      if (error.code === "ERR_JWT_EXPIRED") {
+        return res.status(401).json({ error: "Unauthenticated" });
+      }
       this.errorHandler(res, error);
     }
   }
@@ -71,7 +81,6 @@ class AuthController extends BaseController {
       this.errorHandler(res, error);
     }
   }
-    
 }
 
 export default new AuthController();
