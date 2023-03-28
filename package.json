@@ -13,7 +13,7 @@
     "lint": "eslint . --ext .ts ",
     "test": "jest --coverage"
   },
-   "devDependencies": {
+  "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.13",
