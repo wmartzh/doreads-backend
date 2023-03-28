@@ -11,7 +11,7 @@ export class BaseController {
    * @param {number} statusCode - The HTTP status code to return.
    */
   public responseHandler(res: Response, response: any, statusCode: number) {
-    res.status(statusCode).json(response);
+    return res.status(statusCode).json(response).end();
   }
 
   /**
