@@ -32,6 +32,13 @@ enum PenaltyStatus {
   UNPAYED
 }
 
+
+enum LoanStatus {
+  IN_PROGRESS
+  COMPLETED
+  DELAYED
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -47,25 +54,25 @@ model Book {
   title     String
   author    String
   isbn      String     @unique
-  category  String
+  category  String[] 
   year      Int
-  picture   String?
+  cover   String?
   editorial String?
   language  String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  bookInfo  BookInfo[]
+  tracker  BookTracker[]
 }
 
-model BookInfo {
+model BookTracker {
   id        Int        @id @default(autoincrement())
   code      String     @unique
   status    BookStatus @default(AVAILABLE)
+  bookId    Int
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   book      Book       @relation(fields: [bookId], references: [id])
-  bookId    Int
-  loan      Loan[]
+  loans      Loan[]
 }
 
 model Student {
@@ -93,11 +100,15 @@ model Penalty {
 
 model Loan {
   id         Int      @id @default(autoincrement())
-  returnDate DateTime
+  status LoanStatus @default(IN_PROGRESS)
+  borrowed DateTime
+  returned DateTime
+  estimateReturn DateTime
+  delayDays Int
+  trackerId Int
+  studentId  Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   student    Student  @relation(fields: [studentId], references: [id])
-  studentId  Int
-  bookInfo   BookInfo @relation(fields: [bookInfoId], references: [id])
-  bookInfoId Int
+  tracker   BookTracker @relation(fields: [trackerId], references: [id])
 }
