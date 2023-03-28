@@ -29,18 +29,18 @@ class BookService {
     });
   }
   /**
-   * It uploads the picture url from the external server to the database
-   * @param {string} picture - The image url
+   * It uploads the cover url from the external server to the database
+   * @param {string} cover - The image url
    * @param {number} bookId - The book id
    * @returns A promise
    */
-  async uploadPicture(picture: Book["picture"], bookId: number) {
+  async uploadPicture(cover: Book["cover"], bookId: number) {
     return await prisma.book.update({
       where: {
         id: bookId,
       },
       data: {
-        picture,
+        cover,
       },
     });
   }
