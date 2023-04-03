@@ -1,18 +1,18 @@
-import { BookInfo, BookStatus, Role } from "@prisma/client";
+import { BookTracker, BookStatus, Role } from "@prisma/client";
 import { HttpError } from "../types/custom.error";
 import prisma from "../database/client";
 import { SortOptions } from "../types/req.filter";
 import { getSearchQuery } from "../helpers/queries.helper";
 import { paginateResult } from "../helpers/pagination.helper";
 
-class BookInfoService {
+class BookTrackerService {
   /**
    * It adds a new book
-   * @param {BookInfo} bookInfo - The book data
+   * @param {BookTracker} bookTracker - The book data
    * @returns A promise
    */
-  async addBook(bookInfo: BookInfo) {
-    return await prisma.bookInfo.create({ data: bookInfo });
+  async addBook(bookTracker: BookTracker) {
+    return await prisma.bookTracker.create({ data: bookTracker });
   }
   /**
    * It changes the book status
@@ -21,7 +21,7 @@ class BookInfoService {
    * @returns A promise
    */
   async changeBookStatus(bookId: number, status: BookStatus) {
-    return await prisma.bookInfo.update({
+    return await prisma.bookTracker.update({
       where: {
         id: bookId,
       },
@@ -32,16 +32,16 @@ class BookInfoService {
   }
   /**
    * It updates an existing book information
-   * @param {BookInfo} bookInfo - The book to update
+   * @param {BookTracker} bookTracker - The book to update
    * @param {number} bookId - The book id
    * @returns A promise
    */
-  async updateBook(bookInfo: BookInfo, bookId: number) {
-    return await prisma.bookInfo.update({
+  async updateBook(bookTracker: BookTracker, bookId: number) {
+    return await prisma.bookTracker.update({
       where: {
         id: bookId,
       },
-      data: bookInfo,
+      data: bookTracker,
     });
   }
   /**
@@ -52,7 +52,7 @@ class BookInfoService {
    */
   async deleteBook(bookId: number, role: Role) {
     if (role === "ADMIN") {
-      return await prisma.bookInfo.delete({
+      return await prisma.bookTracker.delete({
         where: {
           id: bookId,
         },
@@ -72,6 +72,7 @@ class BookInfoService {
    */
   async getAllBooks(limit: number, offset: number, sortOption: SortOptions, search?: string) {
     const count = await prisma.bookInfo.count();
+
     if (count === 0) { throw new HttpError({ messsage: "Book not found" }, 404);}
     const query: any = {
       take: limit,
@@ -93,7 +94,7 @@ class BookInfoService {
    * @returns A promise
    */
   async getBookById(bookId: number) {
-    const book = await prisma.bookInfo.findUnique({
+    const book = await prisma.bookTracker.findUnique({
       where: {
         id: bookId,
       },
@@ -103,4 +104,4 @@ class BookInfoService {
   }
 }
 
-export default new BookInfoService();
+export default new BookTrackerService();
