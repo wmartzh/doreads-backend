@@ -71,7 +71,7 @@ class BookTrackerService {
    * @returns A promise
    */
   async getAllBooks(limit: number, offset: number, sortOption: SortOptions, search?: string) {
-    const count = await prisma.bookInfo.count();
+    const count = await prisma.bookTracker.count();
 
     if (count === 0) { throw new HttpError({ messsage: "Book not found" }, 404);}
     const query: any = {
@@ -84,7 +84,7 @@ class BookTrackerService {
     if (search) {
       query["where"] = getSearchQuery(["code"], search);
     }
-    const result = await prisma.bookInfo.findMany(query);
+    const result = await prisma.bookTracker.findMany(query);
     const paginatedResult = paginateResult(result, limit, offset, count);
     return paginatedResult;
   }
