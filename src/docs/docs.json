@@ -98,7 +98,48 @@
         }
       }
     },
-    "/auth/refreshToken": {
+    "/auth/logout": {
+      "get":  {
+        "tags":["User Auth"],
+        "summary": "Log out of an existing user account",
+        "description": "Log out of an existing user account",
+        "security":[
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User successfully logged out"
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token de autenticación JWT",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+
+      }
+    },
+    "/auth/refresh-token": {
       "post": {
         "tags": ["User Auth"],
         "summary": "A refresh token Form",
@@ -137,6 +178,50 @@
             "description": "User not authenticated"
           }
         }
+      }
+    },
+    "/auth/profile":  {
+      "get":{
+        "tags":["User Auth"],
+        "summary": "Get the profile of the logged in user",
+        "description": "Get the profile of the logged in user",
+        "security":[
+          {
+            "bearerAuth": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "User profile successfully retrieved",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/profileResponse"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "User not authenticated"
+        },
+        "403": {
+          "description": "User not authorized"
+        },
+        "404": {
+          "description": "User not found"
+        }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Token de autenticación JWT",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
       }
     },
     "/student/register": {
@@ -249,51 +334,6 @@
         }
       }
     },
-    "/student/{id}": {
-      "get": {
-        "tags": ["Student"],
-        "summary": "Get a student by ID",
-        "description": "Get a student by ID with authentication token",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of the student to retrieve",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Student found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Student"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "User not authenticated"
-          },
-          "403": {
-            "description": "User not authorized"
-          },
-          "404": {
-            "description": "Student not found"
-          }
-        }
-      }
-    },
     "/student/{studentId}/change-status/{status}": {
       "get": {
         "tags": ["Student"],
@@ -343,11 +383,11 @@
         }
       }
     },
-    "/student/{id}/delete": {
-      "delete": {
+    "/student/{id}": {
+      "get": {
         "tags": ["Student"],
-        "summary": "Delete a student by ID",
-        "description": "Delete a student by ID with authentication token required",
+        "summary": "Get a student by ID",
+        "description": "Get a student by ID with authentication token",
         "security": [
           {
             "bearerAuth": []
@@ -357,7 +397,7 @@
           {
             "name": "id",
             "in": "path",
-            "description": "ID of the student to delete",
+            "description": "ID of the student to retrieve",
             "required": true,
             "schema": {
               "type": "integer",
@@ -366,8 +406,15 @@
           }
         ],
         "responses": {
-          "204": {
-            "description": "Student deleted"
+          "200": {
+            "description": "Student found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Student"
+                }
+              }
+            }
           },
           "401": {
             "description": "User not authenticated"
@@ -379,10 +426,8 @@
             "description": "Student not found"
           }
         }
-      }
-    },
-    "/student/{id}/update": {
-      "post": {
+      },
+      "put": {
         "tags": ["Student"],
         "summary": "Update student by ID",
         "description": "Update student details by providing the student ID",
@@ -437,6 +482,42 @@
             "description": "Student not found"
           }
         }
+      },
+      "delete": {
+        "tags": ["Student"],
+        "summary": "Delete a student by ID",
+        "description": "Delete a student by ID with authentication token required",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the student to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Student deleted"
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized"
+          },
+          "404": {
+            "description": "Student not found"
+          }
+        }
       }
     },
     "/book/register": {
@@ -483,6 +564,49 @@
       }
     },
     "/book/{id}": {
+      "get":{
+        "tags":["Book"],
+        "summary":"Get book by ID",
+        "description":"Get book by ID with authentication token",
+        "security":[
+          {
+            "bearerAuth":[]
+          }
+        ],
+        "parameters":[
+          {
+            "name":"id",
+            "in":"path",
+            "description":"ID of the book to get",
+            "required":true,
+            "schema":{
+              "type":"integer",
+              "format":"int64"
+            }
+          }
+        ],
+        "responses":{
+          "200":{
+            "description":"Book found",
+            "content":{
+              "application/json":{
+                "schema":{
+                  "$ref":"#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "401":{
+            "description":"User not authenticated"
+          },
+          "403":{
+            "description":"User not authorized"
+          },
+          "404":{
+            "description":"Book not found"
+          }
+        }
+      },
       "put": {
         "tags": ["Book"],
         "summary": "Update book by ID",
@@ -538,9 +662,7 @@
             "description": "book not found"
           }
         }
-      }
-    },
-    "/book/{id}/": {
+      },
       "delete": {
         "tags": ["Book"],
         "summary": "Delete a book by ID",
@@ -704,6 +826,52 @@
       }
     },
     "/book/info/{id}": {
+      "get": {
+        "tags": ["BookInfo"],
+        "summary": "Get book details by ID",
+        "description": "Get book details by providing the book ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of book to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "401": {
+            "description": "User not authenticated"
+          },
+          "403": {
+            "description": "User not authorized to access book details"
+          },
+          "404": {
+            "description": "Book not found"
+          }
+        }
+      },
       "put": {
         "tags": ["BookInfo"],
         "summary": "Update book by ID",
@@ -737,7 +905,7 @@
         },
         "responses": {
           "200": {
-            "description": "Updated student details",
+            "description": "Updated book details",
             "content": {
               "application/json": {
                 "schema": {
@@ -756,12 +924,10 @@
             "description": "User not authorized to update book details"
           },
           "404": {
-            "description": "book not found"
+            "description": "Book not found"
           }
         }
-      }
-    },
-    "/book/info/{id}/": {
+      },
       "delete": {
         "tags": ["BookInfo"],
         "summary": "Delete a book by ID",
@@ -785,14 +951,14 @@
         ],
         "responses": {
           "204": {
-            "description": "book deleted"
+            "description": "Book deleted"
           },
           "401": {
             "description": "User not authenticated"
           },
           "403": {
             "description": "User not authorized"
-          },
+          },    
           "404": {
             "description": "book not found"
           }
@@ -832,7 +998,6 @@
         }
       }
     }
-
   },
   
     
@@ -967,6 +1132,32 @@
           "type": "integer"
         }
       }
+    },
+    "profileResponse":{
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["ADMIN", "LIBRARIAN"]
+        },
+        "createdAt":{
+          "type": "string",
+          "format":"date-time"
+        },
+        "updatedAt":{
+          "type": "string",
+          "format":"date-time"
+      }
+    }
     },
 
 
