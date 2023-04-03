@@ -1,12 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { promisify } from "util";
-import * as jwt from "jsonwebtoken";
 import userService from "../services/user.service";
-import { CustomError, HttpError } from "../types/custom.error";
+import { HttpError } from "../types/custom.error";
 import { getAccessTokenFromHeader } from "../helpers/request.helper";
-import { AuthPayload } from "../services/auth.service";
-import { DateTime } from "luxon";
-import { base64url, jwtDecrypt, jwtVerify } from "jose";
+import { jwtVerify } from "jose";
 
 /**
  * It takes a request, checks if there's a token in the header, if there is, it verifies the token, and
