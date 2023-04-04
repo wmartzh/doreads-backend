@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { SortOptions } from "../types/req.filter";
-import { AddBookSchema, ChangeBookStatusSchema } from '../models/bookTracker.models';
+import { ChangeBookStatusSchema } from '../models/bookTracker.models';
 import bookInfoService from '../services/bookTracker.service';
 import { BaseController } from '../types/base.controller';
 
@@ -12,7 +12,8 @@ class BookInfoController extends BaseController {
    */
   async addBook(req: Request | any, res: Response) {
     try {
-      const data = await AddBookSchema.validateAsync(req.body);
+      const { bookId, quantity } = req.params
+      const data = Array(parseInt(quantity)).fill({ bookId: parseInt(bookId) });
       const result = await bookInfoService.createManyBooks(data);
       const numBooksCreated = result.count;
       this.responseHandler(res, { message: `${numBooksCreated} books added successfully` }, 200);
