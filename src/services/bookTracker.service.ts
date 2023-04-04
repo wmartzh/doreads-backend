@@ -35,20 +35,6 @@ class BookTrackerService {
     });
   }
   /**
-   * It updates an existing book information
-   * @param {BookTracker} bookTracker - The book to update
-   * @param {number} bookId - The book id
-   * @returns A promise
-   */
-  async updateBook(bookTracker: BookTracker, bookId: number) {
-    return await prisma.bookTracker.update({
-      where: {
-        id: bookId,
-      },
-      data: bookTracker,
-    });
-  }
-  /**
    * It deletes a book, only if the user is an admin
    * @param {number} bookId - The book id
    * @param {Role} role - The user role
