@@ -6,17 +6,27 @@ import { getSearchQuery } from "../helpers/queries.helper";
 import { paginateResult } from "../helpers/pagination.helper";
 
 class BookTrackerService {
-  private generateCode(bookId: number) {
-  const randomPart = Math.floor(Math.random() * 10000);
-  return `AAA-${bookId.toString().padStart(4, '0')}-${randomPart.toString().padStart(4, '0')}`;
-}
+  private generateCode() {
+    const letters: string[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    let code = "";
+    // Generate the first 3 random letters
+    for (let i = 0; i < 3; i++) {
+      code += letters[Math.floor(Math.random() * letters.length)];
+    }
+    // Generate the next 6 random numbers
+    for (let i = 0; i < 6; i++) {
+      code += Math.floor(Math.random() * 10).toString();
+    }
+    return code;
+  }
   /**
    * It adds a new book
    * @param {BookTracker[]} books - The array of book data
    * @returns A promise
    */
   async createManyBooks(books: BookTracker[]) {
-    return await prisma.bookTracker.createMany({ data: books });
+    const data = books.map(book => ({ ...book, code: this.generateCode() }));
+    return await prisma.bookTracker.createMany({ data });
   }
   /**
    * It changes the book status
