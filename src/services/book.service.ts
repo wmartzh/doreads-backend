@@ -70,7 +70,7 @@ class BookService {
    * @param {any} req - For the url in the pagination
    * @returns A promise
    */
-  async getAllBooks(limit: number, offset: number, sortOption: SortOptions, search?: string, req?: any) {
+  async getAllBooks(limit: number, offset: number, sortOption: SortOptions, search?: string) {
     const count = await prisma.book.count();
     if (count === 0) { throw new HttpError({ messsage: "There are no books" }, 404);}
     const query: any ={
@@ -84,7 +84,7 @@ class BookService {
       query["where"] = getSearchQuery(["isbn", "title"], search);
     }
     const result = await prisma.book.findMany(query);
-    const paginatedResult = paginateResult(result, limit, offset, count, req);
+    const paginatedResult = paginateResult(result, limit, offset, count);
     return paginatedResult;
   }
   /**

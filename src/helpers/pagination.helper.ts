@@ -1,27 +1,13 @@
-import { Request } from "express";
   /**
    * Format the result and return it
    * @returns A promise
    */
-  export function paginateResult(result: any, limit: number, offset: number, count: number, req: Request) {
+  export function paginateResult(result: any, limit: number, offset: number, count: number) {
     const size = result.length;
     const currentPage = Math.floor(offset / limit) + 1;
     const lastPage = Math.ceil(count / limit);
-
-    let previousPage = null;
-    if (currentPage > 1) {
-      const url = new URL(`${req.protocol}://${req.headers.host}${req.originalUrl}`);
-      url.searchParams.set("limit", limit.toString());
-      url.searchParams.set("page", (currentPage - 1).toString());
-      previousPage = url.toString();
-    }
-    let nextPage = null;
-    if (currentPage < lastPage) {
-      const url = new URL(`${req.protocol}://${req.headers.host}${req.originalUrl}`);
-      url.searchParams.set("limit", limit.toString());
-      url.searchParams.set("page", (currentPage + 1).toString());
-      nextPage = url.toString();
-    }
+    const previousPage = currentPage > 1 ? currentPage - 1 : undefined;
+    const nextPage = currentPage < lastPage ? currentPage + 1 : undefined;
   
     return {
       info: {
