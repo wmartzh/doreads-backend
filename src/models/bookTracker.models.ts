@@ -1,9 +1,11 @@
 import * as Joi from "joi";
 
-export const AddBookSchema = Joi.object({
-  code: Joi.string().pattern(/^[A-Z]{3}-\d{4}-\d{4}$/).required(),
-  bookId: Joi.number().required(),
-});
+export const AddBookSchema = Joi.array().items(
+  Joi.object({
+    code: Joi.string().pattern(/^[A-Z]{3}-\d{4}-\d{4}$/).required(),
+    bookId: Joi.number().required(),
+  })
+);
 
 export const ChangeBookStatusSchema = Joi.object({
   bookId: Joi.number().required(),

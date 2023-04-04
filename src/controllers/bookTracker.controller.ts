@@ -6,15 +6,16 @@ import { BaseController } from '../types/base.controller';
 
 class BookInfoController extends BaseController {
   /**
-   * It validates the request body with the AddBookSchema, then calls the bookInfoService.addBook function, and finally sends the response
+   * It validates the request body with the AddBookSchema array, then calls the bookInfoService.createManyBooks function, and finally sends the response
    * @param {Request | any} req
    * @param {Response} res
    */
   async addBook(req: Request | any, res: Response) {
     try {
       const data = await AddBookSchema.validateAsync(req.body);
-      const result = await bookInfoService.addBook(data);
-      this.responseHandler(res, { message: `Book ${result.code} added successfully` }, 200);
+      const result = await bookInfoService.createManyBooks(data);
+      const numBooksCreated = result.count;
+      this.responseHandler(res, { message: `${numBooksCreated} books added successfully` }, 200);
     } catch (error: any) {
       if (error.code && error.code === 'P2002') {
         this.errorHandler(res, { error: 'Book was already registered' });

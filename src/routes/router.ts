@@ -13,7 +13,7 @@ export default function router(app: Application): void {
   app.get("/health", (_req, res) => res.sendStatus(200));
   app.use("/auth", authRouter);
   app.use("/student", authMiddleware, studentRouter);
-  app.use("/book/info", authMiddleware, bookInfo);
+  app.use("/book/tracker", authMiddleware, bookInfo);
   app.use("/book", authMiddleware, bookRouter);
 }
 
