@@ -3,7 +3,7 @@ import { authMiddleware } from "../middlewares/auth.middleware";
 import authRouter from "./auth";
 import studentRouter from "./student";
 import bookRouter from "./book";
-import bookInfo from "./bookInfo";
+import bookInfo from "./bookTracker";
 
 
 export default function router(app: Application): void {

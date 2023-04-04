@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { filterMiddleware } from "../middlewares/filter.middleware";
-import bookInfoController from "../controllers/bookInfo.controller";
+import bookInfoController from "../controllers/bookTracker.controller";
 import { paginationMiddleware } from "../middlewares/pagination.middleware";
 
 export default Router()

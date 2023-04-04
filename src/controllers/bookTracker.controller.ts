@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { SortOptions } from "../types/req.filter";
-import { AddBookSchema, ChangeBookStatusSchema, UpdateBookSchema } from '../models/bookInfo.models';
-import bookInfoService from '../services/bookInfo.service';
+import { AddBookSchema, ChangeBookStatusSchema, UpdateBookSchema } from '../models/bookTracker.models';
+import bookInfoService from '../services/bookTracker.service';
 import { BaseController } from '../types/base.controller';
 
 class BookInfoController extends BaseController {
