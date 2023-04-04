@@ -70,7 +70,7 @@ class StudentService {
    * @param {any} req - The request object
    * @returns A promise
    */
-  async getAllStudents(limit: number, offset: number, sortOption: SortOptions, search?: string, req?: any) {
+  async getAllStudents(limit: number, offset: number, sortOption: SortOptions, search?: string) {
     const count = await prisma.student.count();
     if (count === 0) { throw new HttpError("There are no students", 404);}
     const query: any = {
@@ -84,7 +84,7 @@ class StudentService {
       query["where"] = getSearchQuery(["name", "code"], search);
     }
     const result = await prisma.student.findMany(query);
-    const paginatedResult = paginateResult(result, limit, offset, count, req);
+    const paginatedResult = paginateResult(result, limit, offset, count);
     return paginatedResult;
   }
   /**

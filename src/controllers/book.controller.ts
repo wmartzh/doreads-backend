@@ -100,7 +100,7 @@ class BookController extends BaseController {
       const { search } = req.query;
       const filter: SortOptions = req.filter;
 
-      const result = await bookService.getAllBooks(limit, offset, filter, search, req);
+      const result = await bookService.getAllBooks(limit, offset, filter, search);
       this.responseHandler(res, result, 200);
     } catch (error: any) {
       this.errorHandler(res, error);
