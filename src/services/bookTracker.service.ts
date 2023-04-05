@@ -6,13 +6,27 @@ import { getSearchQuery } from "../helpers/queries.helper";
 import { paginateResult } from "../helpers/pagination.helper";
 
 class BookTrackerService {
+  private generateCode() {
+    const letters: string[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+    let code = "";
+    // Generate the first 3 random letters
+    for (let i = 0; i < 3; i++) {
+      code += letters[Math.floor(Math.random() * letters.length)];
+    }
+    // Generate the next 6 random numbers
+    for (let i = 0; i < 6; i++) {
+      code += Math.floor(Math.random() * 10).toString();
+    }
+    return code;
+  }
   /**
    * It adds a new book
-   * @param {BookTracker} bookTracker - The book data
+   * @param {BookTracker[]} books - The array of book data
    * @returns A promise
    */
-  async addBook(bookTracker: BookTracker) {
-    return await prisma.bookTracker.create({ data: bookTracker });
+  async createManyBooks(books: BookTracker[]) {
+    const data = books.map(book => ({ ...book, code: this.generateCode() }));
+    return await prisma.bookTracker.createMany({ data });
   }
   /**
    * It changes the book status
@@ -28,20 +42,6 @@ class BookTrackerService {
       data: {
         status,
       },
-    });
-  }
-  /**
-   * It updates an existing book information
-   * @param {BookTracker} bookTracker - The book to update
-   * @param {number} bookId - The book id
-   * @returns A promise
-   */
-  async updateBook(bookTracker: BookTracker, bookId: number) {
-    return await prisma.bookTracker.update({
-      where: {
-        id: bookId,
-      },
-      data: bookTracker,
     });
   }
   /**
