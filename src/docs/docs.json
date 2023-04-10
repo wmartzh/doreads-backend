@@ -1503,23 +1503,18 @@
             "$ref": "#/components/schemas/BookTracker"
           }
         }
+      }
       },
       
 
-
-
-
-
-    "securitySchemes": {
-      "bearerAuth": {
-        "type":"http",
-        "name": "authorization",
-        "in": "header",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+      "securitySchemes": {
+        "bearerAuth": {
+          "type":"http",
+          "name": "authorization",
+          "in": "header",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
       }
     }
   }
-}
-}
-  
