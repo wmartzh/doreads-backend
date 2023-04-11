@@ -48,10 +48,10 @@ class BookInfoController extends BaseController {
    * @param {Request | any} req
    * @param {Response} res
    */
-  async deleteBook(req: Request | any, res: Response) {
+  async deleteLastBook(req: Request | any, res: Response) {
     try {
-      const { id } = req.params;
-      const result = await bookInfoService.deleteBook(Number(id), req.user.role);
+      const { bookId } = req.params;
+      const result = await bookInfoService.deleteLastBook(Number(bookId), req.user.role);
       this.responseHandler(res, { message: `Book ${result.code} deleted successfully` }, 200);
     } catch (error: any) {
       if (error.code && error.code === 'P2025') {
