@@ -21,12 +21,12 @@ class BookTrackerService {
   }
   /**
    * It adds a new book
-   * @param {BookTracker[]} books - The array of book data
+   * @param 
    * @returns A promise
    */
-  async createManyBooks(books: BookTracker[]) {
-    const data = books.map(book => ({ ...book, code: this.generateCode() }));
-    return await prisma.bookTracker.createMany({ data });
+  async createBook(books: BookTracker) {
+    const data = { ...books, code: this.generateCode() };
+    return await prisma.bookTracker.create({ data });
   }
   /**
    * It changes the book status

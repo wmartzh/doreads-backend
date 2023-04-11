@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { SortOptions } from "../types/req.filter";
-import { ChangeBookStatusSchema } from '../models/bookTracker.models';
+import { AddBookSchema, ChangeBookStatusSchema } from '../models/bookTracker.models';
 import bookInfoService from '../services/bookTracker.service';
 import { BaseController } from '../types/base.controller';
 
@@ -12,15 +12,13 @@ class BookInfoController extends BaseController {
    */
   async addBook(req: Request | any, res: Response) {
     try {
-      const { bookId, quantity } = req.params
-      const data = Array(parseInt(quantity)).fill({ bookId: parseInt(bookId) });
-      const result = await bookInfoService.createManyBooks(data);
-      const numBooksCreated = result.count;
-      this.responseHandler(res, { message: `${numBooksCreated} books added successfully` }, 200);
+      const data = await AddBookSchema.validateAsync(req.params);
+      const result = await bookInfoService.createBook(data);
+      this.responseHandler(res, { message: `Book ${result.code} created successfully` }, 200);
     } catch (error: any) {
       if (error.code && error.code === 'P2002') {
         this.errorHandler(res, { error: 'Book was already registered' });
-      } if (error.code && error.code === 'P2003') {
+      } else if (error.code && error.code === 'P2003') {
         this.errorHandler(res, { error: "Book doesn't exist" });// This means that there is no book to make the relation
       } else {
         this.errorHandler(res, error);
