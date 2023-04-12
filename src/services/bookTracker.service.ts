@@ -21,12 +21,12 @@ class BookTrackerService {
   }
   /**
    * It adds a new book
-   * @param {BookTracker[]} books - The array of book data
+   * @param 
    * @returns A promise
    */
-  async createManyBooks(books: BookTracker[]) {
-    const data = books.map(book => ({ ...book, code: this.generateCode() }));
-    return await prisma.bookTracker.createMany({ data });
+  async createBook(books: BookTracker) {
+    const data = { ...books, code: this.generateCode() };
+    return await prisma.bookTracker.create({ data });
   }
   /**
    * It changes the book status
@@ -50,11 +50,23 @@ class BookTrackerService {
    * @param {Role} role - The user role
    * @returns A promise
    */
-  async deleteBook(bookId: number, role: Role) {
+  async deleteLastBook(bookId: number, role: Role) {
     if (role === "ADMIN") {
+      const lastBook = await prisma.bookTracker.findFirst({
+        where: {
+          bookId
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
+      if (!lastBook) {
+        throw new HttpError("No book found to delete", 404);
+      }
+  
       return await prisma.bookTracker.delete({
         where: {
-          id: bookId,
+          id: lastBook.id,
         },
       });
     } else {
